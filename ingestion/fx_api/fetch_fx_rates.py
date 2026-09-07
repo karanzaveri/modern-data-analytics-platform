@@ -1,3 +1,4 @@
+import argparse
 import json
 import logging
 from pathlib import Path
@@ -8,7 +9,7 @@ from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
 
-URL = "https://api.frankfurter.app/latest"
+BASE_URL = "https://api.frankfurter.app"
 RAW_DIR = Path("data/raw/fx")
 
 logging.basicConfig(
@@ -37,13 +38,10 @@ def create_session():
 
 def validate_fx_data(data):
     required_fields = {"amount", "base", "date", "rates"}
-
     missing_fields = required_fields - data.keys()
 
     if missing_fields:
-        raise ValueError(
-            f"Missing required fields: {missing_fields}"
-        )
+        raise ValueError(f"Missing required fields: {missing_fields}")
 
     if not isinstance(data["rates"], dict):
         raise ValueError("Rates must be a dictionary")
@@ -51,24 +49,29 @@ def validate_fx_data(data):
     if not data["rates"]:
         raise ValueError("Rates cannot be empty")
 
-    return True
+
+def build_url(requested_date=None):
+    if requested_date:
+        return f"{BASE_URL}/{requested_date}"
+
+    return f"{BASE_URL}/latest"
 
 
-def fetch_fx_rates():
+def fetch_fx_rates(requested_date=None):
     session = create_session()
+    url = build_url(requested_date)
 
-    logger.info("Fetching FX rates from Frankfurter API")
+    logger.info("Fetching FX rates from %s", url)
 
     try:
-        response = session.get(URL, timeout=10)
+        response = session.get(url, timeout=10)
         response.raise_for_status()
 
         data = response.json()
-
         validate_fx_data(data)
 
         logger.info(
-            "FX data received successfully | base=%s | date=%s | rates=%s",
+            "FX data received | base=%s | date=%s | rates=%s",
             data["base"],
             data["date"],
             len(data["rates"]),
@@ -88,10 +91,8 @@ def fetch_fx_rates():
 def save_raw_data(data):
     RAW_DIR.mkdir(parents=True, exist_ok=True)
 
-    ingestion_timestamp = datetime.now(timezone.utc).isoformat()
-
     raw_record = {
-        "ingested_at": ingestion_timestamp,
+        "ingested_at": datetime.now(timezone.utc).isoformat(),
         "source": "frankfurter",
         "payload": data,
     }
@@ -103,7 +104,31 @@ def save_raw_data(data):
 
     logger.info("Raw FX data saved to %s", output_file)
 
+def validate_date(date_string):
+    try:
+        datetime.strptime(date_string, "%Y-%m-%d")
+        return date_string
+    except ValueError as exc:
+        raise argparse.ArgumentTypeError(
+            "Date must be in YYYY-MM-DD format"
+        ) from exc
+
+def parse_args():
+    parser = argparse.ArgumentParser(
+        description="Fetch FX rates from the Frankfurter API"
+    )
+
+    parser.add_argument(
+    "--date",
+    type=validate_date,
+    help="Historical date in YYYY-MM-DD format",
+    )
+
+    return parser.parse_args()
+
 
 if __name__ == "__main__":
-    fx_data = fetch_fx_rates()
+    args = parse_args()
+
+    fx_data = fetch_fx_rates(args.date)
     save_raw_data(fx_data)
