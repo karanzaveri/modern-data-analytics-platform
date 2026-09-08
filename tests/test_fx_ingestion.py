@@ -1,4 +1,7 @@
 import pytest
+import argparse
+import pytest
+from ingestion.fx_api.load_bigquery import transform_fx_for_bigquery
 
 from ingestion.fx_api.fetch_fx_rates import (
     build_url,
@@ -45,5 +48,40 @@ def test_validate_date():
 
 
 def test_validate_invalid_date():
-    with pytest.raises(Exception):
+    with pytest.raises(argparse.ArgumentTypeError):
         validate_date("not-a-date")
+
+
+def test_transform_fx_for_bigquery():
+    data = {
+        "amount": 1.0,
+        "base": "EUR",
+        "date": "2025-01-15",
+        "rates": {
+            "USD": 1.03,
+            "GBP": 0.84,
+        },
+    }
+
+    rows = transform_fx_for_bigquery(data)
+
+    assert len(rows) == 2
+    assert rows[0]["rate_date"] == "2025-01-15"
+    assert rows[0]["base_currency"] == "EUR"
+    assert rows[0]["source"] == "frankfurter"
+
+
+def test_transform_fx_contains_target_currency():
+    data = {
+        "amount": 1.0,
+        "base": "EUR",
+        "date": "2025-01-15",
+        "rates": {
+            "USD": 1.03,
+        },
+    }
+
+    rows = transform_fx_for_bigquery(data)
+
+    assert rows[0]["target_currency"] == "USD"
+    assert rows[0]["rate"] == 1.03
