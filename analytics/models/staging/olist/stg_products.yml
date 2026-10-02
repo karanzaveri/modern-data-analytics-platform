@@ -1,0 +1,27 @@
+version: 2
+
+models:
+  - name: stg_products
+    description: Clean staging model for Olist product records.
+
+    columns:
+      - name: product_id
+        description: Unique product identifier.
+        data_tests:
+          - not_null
+          - unique
+
+      - name: product_category_name
+        description: Product category from the source dataset.
+
+      - name: product_name_length
+        description: Length of the product name after standardizing the source column name.
+
+      - name: product_description_length
+        description: Length of the product description after standardizing the source column name.
+
+      - name: product_photos_qty
+        description: Number of product photos.
+
+      - name: product_weight_g
+        description: Product weight in grams.

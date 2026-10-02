@@ -1,0 +1,27 @@
+version: 2
+
+models:
+  - name: stg_customers
+    description: Clean staging model for Olist customer records.
+
+    columns:
+      - name: customer_id
+        description: Order-level customer identifier.
+        data_tests:
+          - not_null
+          - unique
+
+      - name: customer_unique_id
+        description: Stable customer identifier across multiple orders.
+        data_tests:
+          - not_null
+
+      - name: customer_zip_code_prefix
+        description: Customer postal code prefix stored as a string.
+        data_tests:
+          - not_null
+
+      - name: customer_state
+        description: Brazilian state code for the customer.
+        data_tests:
+          - not_null

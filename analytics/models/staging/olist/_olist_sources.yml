@@ -1,0 +1,15 @@
+version: 2
+
+sources:
+  - name: olist_raw
+    database: mda-platform-2026
+    schema: raw
+
+    tables:
+      - name: orders
+      - name: customers
+      - name: order_items
+      - name: products
+      - name: sellers
+      - name: order_payments
+      - name: payments

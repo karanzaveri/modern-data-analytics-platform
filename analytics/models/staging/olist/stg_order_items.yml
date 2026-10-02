@@ -1,0 +1,40 @@
+version: 2
+
+models:
+  - name: stg_order_items
+    description: Clean staging model for Olist order item records.
+
+    columns:
+      - name: order_id
+        description: Identifier of the order containing the item.
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_orders')
+                field: order_id
+
+      - name: order_item_id
+        description: Sequential item number within an order.
+        data_tests:
+          - not_null
+
+      - name: product_id
+        description: Identifier of the purchased product.
+        data_tests:
+          - not_null
+
+      - name: seller_id
+        description: Identifier of the seller fulfilling the item.
+        data_tests:
+          - not_null
+
+      - name: price
+        description: Item sale price.
+        data_tests:
+          - not_null
+
+      - name: freight_value
+        description: Freight amount charged for the item.
+        data_tests:
+          - not_null

@@ -1,0 +1,32 @@
+version: 2
+
+models:
+  - name: int_payments_by_order
+    description: Order-level payment summary aggregated from payment records.
+
+    columns:
+      - name: order_id
+        description: Unique order identifier.
+        data_tests:
+          - not_null
+          - unique
+
+      - name: total_payment_value
+        description: Sum of all payment records for the order.
+        data_tests:
+          - not_null
+
+      - name: payment_record_count
+        description: Number of payment records associated with the order.
+        data_tests:
+          - not_null
+
+      - name: payment_type_count
+        description: Number of distinct payment types used for the order.
+        data_tests:
+          - not_null
+
+      - name: primary_payment_type
+        description: Payment type associated with the largest payment value for the order.
+        data_tests:
+          - not_null

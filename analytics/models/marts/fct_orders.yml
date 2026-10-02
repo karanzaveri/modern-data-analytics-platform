@@ -1,0 +1,261 @@
+version: 2
+
+models:
+  - name: fct_orders
+    description: Order-level fact table for delivery and customer analytics.
+
+    columns:
+      - name: order_id
+        description: Unique order identifier.
+        data_tests:
+          - not_null
+          - unique
+
+      - name: customer_unique_id
+        description: Stable customer identifier across orders.
+        data_tests:
+          - not_null
+
+      - name: order_purchase_date
+        description: Calendar date when the order was purchased.
+        data_tests:
+          - not_null
+
+  - name: dim_customers
+    description: Customer dimension with one row per unique customer using the most recent known customer record.
+
+    columns:
+      - name: customer_unique_id
+        description: Stable customer identifier across orders.
+        data_tests:
+          - not_null
+          - unique
+
+      - name: latest_customer_id
+        description: Customer record identifier from the most recent known order.
+        data_tests:
+          - not_null
+
+      - name: customer_state
+        description: Most recent known customer state.
+        data_tests:
+          - not_null
+
+  - name: customer_metrics
+    description: Customer-level analytical mart with order, spend, and lifecycle metrics.
+
+    columns:
+      - name: customer_unique_id
+        description: Stable customer identifier across orders.
+        data_tests:
+          - not_null
+          - unique
+
+      - name: first_order_date
+        description: Date of the customer's first recorded order.
+        data_tests:
+          - not_null
+
+      - name: last_order_date
+        description: Date of the customer's most recent recorded order.
+        data_tests:
+          - not_null
+
+      - name: order_count
+        description: Total number of recorded orders for the customer.
+        data_tests:
+          - not_null
+
+      - name: delivered_order_count
+        description: Number of orders with delivered status.
+        data_tests:
+          - not_null
+
+      - name: orders_missing_payment
+        description: Number of orders with no matching payment record.
+        data_tests:
+          - not_null
+
+      - name: total_spend
+        description: Total payment value across the customer's orders. May be null when source payment data is missing.
+
+  - name: monthly_revenue_metrics
+    description: Monthly order and delivered-revenue KPI mart with month-over-month growth metrics.
+
+    columns:
+      - name: order_month
+        description: Calendar month of order purchase.
+        data_tests:
+          - not_null
+          - unique
+
+      - name: order_count
+        description: Total orders placed during the month.
+        data_tests:
+          - not_null
+
+      - name: delivered_order_count
+        description: Orders with delivered status during the month.
+        data_tests:
+          - not_null
+
+      - name: unique_customers
+        description: Distinct customers placing orders during the month.
+        data_tests:
+          - not_null
+
+      - name: delivered_revenue
+        description: Payment value from delivered orders. May be null where delivered payment data is missing or no delivered orders exist.
+
+      - name: revenue_growth_pct
+        description: Month-over-month delivered revenue growth when the previous available row is the immediately preceding calendar month.
+
+      - name: order_growth_pct
+        description: Month-over-month order-count growth when the previous available row is the immediately preceding calendar month.
+
+  - name: monthly_revenue_reporting
+    description: Reporting-ready monthly KPI mart restricted to the stable analysis window from January 2017 through August 2018.
+
+    columns:
+      - name: order_month
+        description: Calendar month used for reporting.
+        data_tests:
+          - not_null
+          - unique
+
+      - name: order_count
+        description: Total orders placed during the month.
+        data_tests:
+          - not_null
+
+      - name: delivered_order_count
+        description: Orders delivered during the month.
+        data_tests:
+          - not_null
+
+      - name: unique_customers
+        description: Distinct customers placing orders during the month.
+        data_tests:
+          - not_null
+
+      - name: delivered_revenue
+        description: Payment value associated with delivered orders.
+
+      - name: previous_order_month
+        description: Previous month within the reporting window.
+
+      - name: previous_month_revenue
+        description: Delivered revenue from the previous reporting month.
+
+      - name: revenue_growth_pct
+        description: Month-over-month delivered revenue growth percentage.
+
+      - name: previous_month_order_count
+        description: Order count from the previous reporting month.
+
+      - name: order_growth_pct
+        description: Month-over-month order growth percentage.
+
+      - name: delivered_average_order_value
+        description: Average payment value for delivered orders during the month.
+
+      - name: delivered_merchandise_value
+        description: Total merchandise value associated with delivered orders during the month.
+
+      - name: delivered_freight_value
+        description: Total freight value associated with delivered orders during the month.
+
+  - name: fct_orders_incremental
+    description: Incremental demonstration of the order-level fact table, using order_id as the unique key.
+
+    columns:
+      - name: order_id
+        description: Unique order identifier.
+        data_tests:
+          - not_null
+          - unique
+
+      - name: customer_unique_id
+        description: Stable customer identifier across orders.
+        data_tests:
+          - not_null
+
+      - name: order_purchase_date
+        description: Calendar date when the order was purchased.
+        data_tests:
+          - not_null
+
+  - name: dim_products
+    description: Product dimension with one row per product.
+
+    columns:
+      - name: product_id
+        description: Unique product identifier.
+        data_tests:
+          - not_null
+          - unique
+
+      - name: product_category_name
+        description: Product category from the source data.
+
+  - name: dim_sellers
+    description: Seller dimension with one row per seller.
+
+    columns:
+      - name: seller_id
+        description: Unique seller identifier.
+        data_tests:
+          - not_null
+          - unique
+
+      - name: seller_city
+        description: Seller city.
+
+      - name: seller_state
+        description: Seller state.
+
+  - name: fct_order_items
+    description: Order-item-level fact table with one row per item within an order.
+
+    columns:
+      - name: order_id
+        description: Order identifier.
+        data_tests:
+          - not_null
+
+      - name: order_item_id
+        description: Item sequence within the order.
+        data_tests:
+          - not_null
+
+      - name: product_id
+        description: Product identifier linking to dim_products.
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_products')
+                field: product_id
+
+      - name: seller_id
+        description: Seller identifier linking to dim_sellers.
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_sellers')
+                field: seller_id
+
+      - name: customer_unique_id
+        description: Stable customer identifier.
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_customers')
+                field: customer_unique_id
+
+      - name: item_total_value
+        description: Item price plus freight value.
+        data_tests:
+          - not_null

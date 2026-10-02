@@ -1,6 +1,5 @@
 import pytest
 import argparse
-import pytest
 from ingestion.fx_api.load_bigquery import transform_fx_for_bigquery
 
 from ingestion.fx_api.fetch_fx_rates import (
@@ -36,7 +35,7 @@ def test_validate_fx_data_missing_field():
     data = {
         "amount": 1.0,
         "base": "EUR",
-        "rates": {"USD": 1.03},
+        "date": "2025-01-15",
     }
 
     with pytest.raises(ValueError):
