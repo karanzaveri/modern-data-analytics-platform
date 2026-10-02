@@ -20,3 +20,8 @@ Thumbs.db
 *.csv
 *.parquet
 *.json
+
+# dbt generated files
+logs/
+target/
+dbt_packages/

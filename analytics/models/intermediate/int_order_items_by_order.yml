@@ -1,0 +1,32 @@
+version: 2
+
+models:
+  - name: int_order_items_by_order
+    description: Order-level summary of item, merchandise, freight, product and seller metrics.
+
+    columns:
+      - name: order_id
+        description: Unique order identifier.
+        data_tests:
+          - not_null
+          - unique
+
+      - name: item_count
+        description: Number of order item records in the order.
+        data_tests:
+          - not_null
+
+      - name: merchandise_value
+        description: Total product price before freight.
+        data_tests:
+          - not_null
+
+      - name: freight_value
+        description: Total freight charged across the order items.
+        data_tests:
+          - not_null
+
+      - name: total_item_value
+        description: Merchandise value plus freight value.
+        data_tests:
+          - not_null

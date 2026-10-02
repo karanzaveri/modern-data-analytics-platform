@@ -1,0 +1,27 @@
+version: 2
+
+models:
+  - name: stg_sellers
+    description: Clean staging model for Olist seller records.
+
+    columns:
+      - name: seller_id
+        description: Unique seller identifier.
+        data_tests:
+          - not_null
+          - unique
+
+      - name: seller_zip_code_prefix
+        description: Seller postal code prefix stored as a string.
+        data_tests:
+          - not_null
+
+      - name: seller_city
+        description: Seller city.
+        data_tests:
+          - not_null
+
+      - name: seller_state
+        description: Seller state.
+        data_tests:
+          - not_null

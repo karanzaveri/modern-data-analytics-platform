@@ -1,0 +1,35 @@
+version: 2
+
+models:
+  - name: stg_payments
+    description: Clean staging model for Olist payment records.
+
+    columns:
+      - name: order_id
+        description: Identifier of the related order.
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_orders')
+                field: order_id
+
+      - name: payment_sequential
+        description: Sequential payment number within an order.
+        data_tests:
+          - not_null
+
+      - name: payment_type
+        description: Payment method used for the transaction.
+        data_tests:
+          - not_null
+
+      - name: payment_installments
+        description: Number of payment installments.
+        data_tests:
+          - not_null
+
+      - name: payment_value
+        description: Value of the payment.
+        data_tests:
+          - not_null

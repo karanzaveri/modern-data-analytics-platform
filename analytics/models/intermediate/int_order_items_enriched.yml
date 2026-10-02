@@ -1,0 +1,37 @@
+version: 2
+
+models:
+  - name: int_order_items_enriched
+    description: Order-item level model enriched with customer and order attributes.
+
+    columns:
+      - name: order_id
+        description: Identifier of the parent order.
+        data_tests:
+          - not_null
+
+      - name: order_item_id
+        description: Sequential item number within an order.
+        data_tests:
+          - not_null
+
+      - name: product_id
+        description: Identifier of the purchased product.
+        data_tests:
+          - not_null
+
+      - name: seller_id
+        description: Identifier of the seller fulfilling the item.
+        data_tests:
+          - not_null
+
+      - name: customer_unique_id
+        description: Stable customer identifier.
+        data_tests:
+          - not_null
+
+      - name: item_total_value
+        description: Item price plus freight value.
+        data_tests:
+        
+          - not_null

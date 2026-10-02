@@ -1,0 +1,22 @@
+version: 2
+
+models:
+  - name: int_orders_with_customers
+    description: Orders enriched with customer identity and location attributes.
+
+    columns:
+      - name: order_id
+        description: Unique identifier for an order.
+        data_tests:
+          - not_null
+          - unique
+
+      - name: customer_id
+        description: Order-level customer identifier.
+        data_tests:
+          - not_null
+
+      - name: customer_unique_id
+        description: Stable customer identifier across multiple orders.
+        data_tests:
+          - not_null
