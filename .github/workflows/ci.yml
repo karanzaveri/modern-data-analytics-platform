@@ -9,7 +9,7 @@ jobs:
   test-and-parse:
     runs-on: ubuntu-latest
     env:
-      DBT_PROFILES_DIR: ${{ runner.temp }}/dbt-profiles
+      DBT_PROFILES_DIR: ${{ github.workspace }}/.dbt-ci
       DBT_SEND_ANONYMOUS_USAGE_STATS: "false"
 
     steps:
