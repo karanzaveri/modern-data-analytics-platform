@@ -1,0 +1,17 @@
+.venv/
+.pytest_cache/
+__pycache__/
+*.pyc
+
+.git/
+.gitignore
+
+analytics/target/
+analytics/logs/
+analytics/dbt_packages/
+
+data/raw/
+
+ingestion/fx_api/home/
+
+*.log

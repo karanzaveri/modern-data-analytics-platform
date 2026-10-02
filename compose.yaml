@@ -1,0 +1,12 @@
+services:
+  analytics:
+    build: .
+    image: modern-data-analytics
+    working_dir: /app/analytics
+
+    environment:
+      GOOGLE_CLOUD_PROJECT: mda-platform-2026
+
+    volumes:
+      - "${USERPROFILE}/.dbt:/root/.dbt:ro"
+      - "${APPDATA}/gcloud:/root/.config/gcloud:ro"
