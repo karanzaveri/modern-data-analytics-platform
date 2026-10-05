@@ -3,6 +3,7 @@ services:
     build: .
     image: modern-data-analytics
     working_dir: /app/analytics
+    command: ["sh", "-c", "cd /app && python -m pytest -v"]
 
     environment:
       GOOGLE_CLOUD_PROJECT: mda-platform-2026
