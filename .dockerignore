@@ -12,6 +12,5 @@ analytics/dbt_packages/
 
 data/raw/
 
-ingestion/fx_api/home/
 
 *.log

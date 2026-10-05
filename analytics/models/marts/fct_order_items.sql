@@ -1,7 +1,7 @@
 with order_items as (
 
     select *
-    from {{ ref('int_order_items_enriched') }}scd ..
+    from {{ ref('int_order_items_enriched') }}
 
 )
 
