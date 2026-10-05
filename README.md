@@ -20,23 +20,6 @@ This is a locally validated portfolio project, not a production deployment.
 
 The diagram shows the Olist pipeline, separate FX pipeline, local/external Airflow orchestration, and GitHub Actions CI.
 
-```text
-Olist CSVs
-  -> Python ingestion
-  -> BigQuery raw
-  -> dbt staging
-  -> dbt intermediate
-  -> marts/reporting
-
-Frankfurter API
-  -> Python ingestion
-  -> raw JSON
-  -> BigQuery raw.fx_rates
-
-External/local Airflow
-  -> FX ingestion -> dbt run -> dbt test
-```
-
 Olist and FX are separate pipelines. FX rates are not used in Olist revenue calculations. Airflow sequences their execution; this does not imply a data dependency between FX and the Olist models.
 
 ## Data sources
