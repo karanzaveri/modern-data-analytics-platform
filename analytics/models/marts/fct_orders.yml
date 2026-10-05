@@ -42,7 +42,7 @@ models:
           - not_null
 
   - name: customer_metrics
-    description: Customer-level analytical mart with order, spend, and lifecycle metrics.
+    description: Customer-level mart with order history and payment-based spend across all order statuses.
 
     columns:
       - name: customer_unique_id
@@ -77,10 +77,10 @@ models:
           - not_null
 
       - name: total_spend
-        description: Total payment value across the customer's orders. May be null when source payment data is missing.
+        description: Total payment value across the customer's orders of all statuses, including non-delivered orders. May be null when source payment data is missing.
 
   - name: monthly_revenue_metrics
-    description: Monthly order and delivered-revenue KPI mart with month-over-month growth metrics.
+    description: Order and delivered-revenue metrics grouped by purchase month, with month-over-month growth.
 
     columns:
       - name: order_month
@@ -95,7 +95,7 @@ models:
           - not_null
 
       - name: delivered_order_count
-        description: Orders with delivered status during the month.
+        description: Orders purchased in this month whose current status is delivered.
         data_tests:
           - not_null
 
@@ -105,7 +105,7 @@ models:
           - not_null
 
       - name: delivered_revenue
-        description: Payment value from delivered orders. May be null where delivered payment data is missing or no delivered orders exist.
+        description: Payment value for orders purchased in this month whose current status is delivered. May be null when qualifying payments are absent.
 
       - name: revenue_growth_pct
         description: Month-over-month delivered revenue growth when the previous available row is the immediately preceding calendar month.
@@ -114,11 +114,11 @@ models:
         description: Month-over-month order-count growth when the previous available row is the immediately preceding calendar month.
 
   - name: monthly_revenue_reporting
-    description: Reporting-ready monthly KPI mart restricted to the stable analysis window from January 2017 through August 2018.
+    description: Purchase-month KPI mart restricted to January 2017 through August 2018, chosen for stable reporting coverage.
 
     columns:
       - name: order_month
-        description: Calendar month used for reporting.
+        description: Calendar month of order purchase used for reporting.
         data_tests:
           - not_null
           - unique
@@ -129,7 +129,7 @@ models:
           - not_null
 
       - name: delivered_order_count
-        description: Orders delivered during the month.
+        description: Orders purchased in this month whose current status is delivered; not a count by delivery month.
         data_tests:
           - not_null
 
@@ -139,7 +139,7 @@ models:
           - not_null
 
       - name: delivered_revenue
-        description: Payment value associated with delivered orders.
+        description: Payment value for orders purchased in this month whose current status is delivered.
 
       - name: previous_order_month
         description: Previous month within the reporting window.
@@ -157,16 +157,16 @@ models:
         description: Month-over-month order growth percentage.
 
       - name: delivered_average_order_value
-        description: Average payment value for delivered orders during the month.
+        description: Average payment value for orders purchased in this month whose current status is delivered.
 
       - name: delivered_merchandise_value
-        description: Total merchandise value associated with delivered orders during the month.
+        description: Merchandise value for orders purchased in this month whose current status is delivered.
 
       - name: delivered_freight_value
-        description: Total freight value associated with delivered orders during the month.
+        description: Freight value for orders purchased in this month whose current status is delivered.
 
   - name: fct_orders_incremental
-    description: Incremental demonstration of the order-level fact table, using order_id as the unique key.
+    description: Incremental demonstration using order_id as the unique key; excluded from normal orchestration and non-incremental validation.
 
     columns:
       - name: order_id
