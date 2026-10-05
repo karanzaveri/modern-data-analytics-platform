@@ -16,6 +16,10 @@ This is a locally validated portfolio project, not a production deployment.
 
 ## Architecture
 
+![Olist Analytics Engineering Platform architecture](docs/images/architecture-diagram.png)
+
+The diagram shows the Olist pipeline, separate FX pipeline, local/external Airflow orchestration, and GitHub Actions CI.
+
 ```text
 Olist CSVs
   -> Python ingestion
