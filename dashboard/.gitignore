@@ -1,0 +1,10 @@
+**/.pbi/localSettings.json
+**/.pbi/cache.abf
+
+# Local Power BI settings and caches are not portable project files.
+**/.pbi/
+
+# Keep project definitions despite the repository-wide JSON exclusion.
+!Data Analytics.Report/definition/**/*.json
+!Data Analytics.Report/StaticResources/**/*.json
+!Data Analytics.SemanticModel/diagramLayout.json

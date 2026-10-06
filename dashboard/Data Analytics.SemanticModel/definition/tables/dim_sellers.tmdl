@@ -1,0 +1,46 @@
+table dim_sellers
+	lineageTag: a12cc706-d9a6-4827-8e9a-9c1a35502312
+
+	column seller_id
+		dataType: string
+		lineageTag: 5170ba9e-ded8-46ed-a651-9c9b4f255268
+		summarizeBy: none
+		sourceColumn: seller_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column seller_zip_code_prefix
+		dataType: string
+		lineageTag: dc719068-b8d8-4d17-87bc-41e8dfa2a232
+		summarizeBy: none
+		sourceColumn: seller_zip_code_prefix
+
+		annotation SummarizationSetBy = Automatic
+
+	column seller_city
+		dataType: string
+		lineageTag: 81b1abc2-8fbb-4313-9e38-aba213ea0470
+		summarizeBy: none
+		sourceColumn: seller_city
+
+		annotation SummarizationSetBy = Automatic
+
+	column seller_state
+		dataType: string
+		lineageTag: 093d74e7-189c-4e6a-b5f7-d1fb4fe924f7
+		summarizeBy: none
+		sourceColumn: seller_state
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dim_sellers = m
+		mode: import
+		source =
+				let
+				  Source = GoogleBigQuery.Database([Implementation = "2.0"]),
+				  #"Navigation 1" = Source{[Name = "mda-platform-2026", Kind = "Database"]}[Data],
+				  #"Navigation 2" = #"Navigation 1"{[Name = "analytics_dev", Kind = "Schema"]}[Data],
+				  #"Navigation 3" = #"Navigation 2"{[Name = "dim_sellers", Kind = "Table"]}[Data]
+				in
+				  #"Navigation 3"
+

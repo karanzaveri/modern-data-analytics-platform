@@ -1,0 +1,193 @@
+table fct_order_items
+	lineageTag: ff938224-59b5-4740-bba5-5443b5ceae2b
+
+	measure 'Delivered Merchandise Value' =
+			CALCULATE(
+			    SUM(fct_order_items[price]),
+			    fct_order_items[order_status] = "delivered"
+			)
+		formatString: #,0.00
+		lineageTag: 5a4f8546-b672-4fa8-a7b7-70274d850ff1
+
+	measure 'Delivered Freight Value' =
+			CALCULATE(
+			    SUM(fct_order_items[freight_value]),
+			    fct_order_items[order_status] = "delivered"
+			)
+		formatString: #,0.00
+		lineageTag: f03ede72-f460-46dd-8e90-ad9b92396dcf
+
+	measure 'Delivered Item Total Value' =
+			CALCULATE(
+			    SUM(fct_order_items[item_total_value]),
+			    fct_order_items[order_status] = "delivered"
+			)
+		formatString: #,0.00
+		lineageTag: 857cf9fa-eb04-4cd5-9c3c-a2af3ace9c6b
+
+	measure 'Delivered Item Count' =
+			CALCULATE(
+			    COUNTROWS(fct_order_items),
+			    fct_order_items[order_status] = "delivered"
+			)
+		formatString: #,0
+		lineageTag: 5bf7d80f-1d76-469d-b948-c323c039978b
+
+	measure 'Delivered Item Orders' =
+			CALCULATE(
+			    DISTINCTCOUNT(fct_order_items[order_id]),
+			    fct_order_items[order_status] = "delivered"
+			)
+		formatString: #,0
+		lineageTag: 10be028d-e5d3-4731-baa8-27dd97d9f910
+
+	measure 'Delivered Item Customers' =
+			CALCULATE(
+			    DISTINCTCOUNT(fct_order_items[customer_unique_id]),
+			    fct_order_items[order_status] = "delivered"
+			)
+		formatString: #,0
+		lineageTag: 90c7b6e5-534a-464e-a692-657251797b80
+
+	measure 'Active Delivered Products' =
+			CALCULATE(
+			    DISTINCTCOUNT(fct_order_items[product_id]),
+			    fct_order_items[order_status] = "delivered"
+			)
+		formatString: #,0
+		lineageTag: 0b280ef2-3584-4718-831a-33fee4df8f49
+
+	measure 'Active Delivered Sellers' =
+			CALCULATE(
+			    DISTINCTCOUNT(fct_order_items[seller_id]),
+			    fct_order_items[order_status] = "delivered"
+			)
+		formatString: #,0
+		lineageTag: 894325f1-c271-430a-b3c4-ac9487b5c7a4
+
+	measure 'Average Delivered Item Price' = DIVIDE([Delivered Merchandise Value], [Delivered Item Count])
+		formatString: #,0.00
+		lineageTag: fd3da425-5ff5-4629-b81c-6d1e34ccb0f3
+
+	measure 'Delivered Freight Share' = DIVIDE([Delivered Freight Value], [Delivered Item Total Value])
+		formatString: 0.00%
+		lineageTag: ec86ce49-6b2d-4d93-bf69-828bfdb3ec9e
+
+	column order_id
+		dataType: string
+		lineageTag: 515ab698-cb01-476f-9019-511da613b75e
+		summarizeBy: none
+		sourceColumn: order_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column order_item_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 41cf323e-76d7-41d4-bdc0-ae13f53cb928
+		summarizeBy: sum
+		sourceColumn: order_item_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column product_id
+		dataType: string
+		lineageTag: 778d9884-19ce-4a8a-b857-3d23ba662c4c
+		summarizeBy: none
+		sourceColumn: product_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column seller_id
+		dataType: string
+		lineageTag: 3256fc19-9154-4a5d-a3c4-a1c20214c282
+		summarizeBy: none
+		sourceColumn: seller_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column customer_unique_id
+		dataType: string
+		lineageTag: 20e80439-2f11-43d5-942d-93a84aae8fba
+		summarizeBy: none
+		sourceColumn: customer_unique_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column order_status
+		dataType: string
+		lineageTag: 5dd503d1-ffa5-4f89-8ce7-c933671fb387
+		summarizeBy: none
+		sourceColumn: order_status
+
+		annotation SummarizationSetBy = Automatic
+
+	column order_purchase_timestamp
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: a0d89a63-9690-49c2-8d60-a197313b3b12
+		summarizeBy: none
+		sourceColumn: order_purchase_timestamp
+
+		variation Variation
+			isDefault
+			relationship: 2a123c55-d468-4e47-83ed-3fd5b450e5b6
+			defaultHierarchy: LocalDateTable_20ab87fa-d630-4ffa-84fe-c18e709bab6f.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column shipping_limit_date
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 39dbf6d8-c32d-4fdf-9539-e1faebea73f7
+		summarizeBy: none
+		sourceColumn: shipping_limit_date
+
+		variation Variation
+			isDefault
+			relationship: f62229b7-c9f2-4a67-8403-b2cbbdf3d0dd
+			defaultHierarchy: LocalDateTable_949192f2-900f-46b6-ab67-3baa7a5358ba.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column price
+		dataType: double
+		lineageTag: b55a5776-8c96-4d46-9582-d369d12b59c7
+		summarizeBy: sum
+		sourceColumn: price
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column freight_value
+		dataType: double
+		lineageTag: cf3079ae-f6b8-478d-8596-ed167580fd5a
+		summarizeBy: sum
+		sourceColumn: freight_value
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column item_total_value
+		dataType: double
+		lineageTag: f7c60199-d9a6-4f6f-bd68-c79e3755e8d0
+		summarizeBy: sum
+		sourceColumn: item_total_value
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition fct_order_items = m
+		mode: import
+		source =
+				let
+				  Source = GoogleBigQuery.Database([Implementation = "2.0"]),
+				  #"Navigation 1" = Source{[Name = "mda-platform-2026", Kind = "Database"]}[Data],
+				  #"Navigation 2" = #"Navigation 1"{[Name = "analytics_dev", Kind = "Schema"]}[Data],
+				  #"Navigation 3" = #"Navigation 2"{[Name = "fct_order_items", Kind = "Table"]}[Data]
+				in
+				  #"Navigation 3"
+
