@@ -1,0 +1,363 @@
+table fct_orders
+	lineageTag: 90f6ba15-b1ba-420e-8029-368f9d8b894e
+
+	measure 'Average Delivery Days' =
+			CALCULATE(
+			    AVERAGE(fct_orders[delivery_days]),
+			    fct_orders[order_status] = "delivered",
+			    NOT ISBLANK(fct_orders[delivery_days])
+			)
+		formatString: 0.00
+		lineageTag: 94c98d47-fa4c-4467-9553-72817cdc67d2
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Late Delivery Rate' =
+			DIVIDE(
+			    CALCULATE(
+			        COUNTROWS(fct_orders),
+			        fct_orders[order_status] = "delivered",
+			        NOT ISBLANK(fct_orders[delivery_delay_days]),
+			        fct_orders[delivery_delay_days] > 0
+			    ),
+			    CALCULATE(
+			        COUNTROWS(fct_orders),
+			        fct_orders[order_status] = "delivered",
+			        NOT ISBLANK(fct_orders[delivery_delay_days])
+			    )
+			)
+		formatString: 0.00%
+		lineageTag: 981d770c-7bbc-4038-97d3-2b24dea2b70e
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Delivered Revenue' =
+			CALCULATE(
+			    SUM(fct_orders[total_payment_value]),
+			    fct_orders[order_status] = "delivered"
+			)
+		formatString: #,0.00
+		lineageTag: 38f982e8-c53e-4422-8b96-5a8f50f1f2a0
+
+	measure 'Delivered Orders' =
+			CALCULATE(
+			    COUNTROWS(fct_orders),
+			    fct_orders[order_status] = "delivered"
+			)
+		formatString: #,0
+		lineageTag: b5c5049f-decd-4b2c-bd52-546626fa8e81
+
+	measure 'Distinct Customers' = DISTINCTCOUNT(fct_orders[customer_unique_id])
+		formatString: #,0
+		lineageTag: 2fde60aa-6023-4bff-a8da-6b006de881f4
+
+	measure 'Geography Delivered AOV' = DIVIDE([Delivered Revenue], [Delivered Orders])
+		formatString: #,0.00
+		lineageTag: e36e091a-d562-40b4-837d-701633b742fe
+
+	measure 'Average Delay Days (Late Orders)' =
+			CALCULATE(
+			    AVERAGE(fct_orders[delivery_delay_days]),
+			    fct_orders[order_status] = "delivered",
+			    NOT ISBLANK(fct_orders[delivery_delay_days]),
+			    fct_orders[delivery_delay_days] > 0
+			)
+		formatString: 0.00
+		lineageTag: 71ac3b91-6a6f-452d-b88a-5d508a6cfa0f
+
+	column order_id
+		dataType: string
+		lineageTag: 1192774c-602c-4023-a689-41fb13f0fd93
+		summarizeBy: none
+		sourceColumn: order_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column customer_id
+		dataType: string
+		lineageTag: f60b060b-427d-4b7f-b1f3-41d84a1a67ac
+		summarizeBy: none
+		sourceColumn: customer_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column customer_unique_id
+		dataType: string
+		lineageTag: 224df875-6eb1-4b37-a3e9-23db44a0436a
+		summarizeBy: none
+		sourceColumn: customer_unique_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column customer_city
+		dataType: string
+		lineageTag: 2e746dbc-6b31-4825-98ca-21dd968826eb
+		summarizeBy: none
+		sourceColumn: customer_city
+
+		annotation SummarizationSetBy = Automatic
+
+	column customer_state
+		dataType: string
+		lineageTag: 29321e4a-35fd-407d-b05d-2f83ba855525
+		summarizeBy: none
+		sourceColumn: customer_state
+
+		annotation SummarizationSetBy = Automatic
+
+	column order_status
+		dataType: string
+		lineageTag: 83554c28-864b-4d30-8eb1-badbb719a9f7
+		summarizeBy: none
+		sourceColumn: order_status
+
+		annotation SummarizationSetBy = Automatic
+
+	column order_purchase_timestamp
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 05cf5436-571c-4c64-81c4-e2a14c877889
+		summarizeBy: none
+		sourceColumn: order_purchase_timestamp
+
+		variation Variation
+			isDefault
+			relationship: 7f8d5fef-d407-4b1c-ba88-cee8f9686be1
+			defaultHierarchy: LocalDateTable_69a9c8be-eb15-4f1f-b12a-a1e183e1b85d.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column order_approved_at
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: ac961274-1b61-41e3-87c6-0a48d485c2bb
+		summarizeBy: none
+		sourceColumn: order_approved_at
+
+		variation Variation
+			isDefault
+			relationship: bb15edd7-e1ff-459b-ae4a-a47edcc1b586
+			defaultHierarchy: LocalDateTable_52681298-7284-4559-8a4a-5c9beeb1df48.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column order_delivered_carrier_date
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 8f3ba896-4e55-414b-927e-3ac5f3fe57ae
+		summarizeBy: none
+		sourceColumn: order_delivered_carrier_date
+
+		variation Variation
+			isDefault
+			relationship: fed9744f-7d2a-4802-88e2-5a6ac14149f9
+			defaultHierarchy: LocalDateTable_11452621-deeb-46a5-be24-729a6afda59f.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column order_delivered_customer_date
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 0bb60fe9-9e66-4e68-9f4f-24605f2eeba8
+		summarizeBy: none
+		sourceColumn: order_delivered_customer_date
+
+		variation Variation
+			isDefault
+			relationship: 37b64775-04d9-4ad3-b1a7-28e99719a82a
+			defaultHierarchy: LocalDateTable_6c68cb8d-cd3b-40c7-8fe2-a2b26cbee456.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column order_estimated_delivery_date
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 6556d963-1775-4ecb-ad78-06131c8c0ff7
+		summarizeBy: none
+		sourceColumn: order_estimated_delivery_date
+
+		variation Variation
+			isDefault
+			relationship: e049c1e6-e361-4cfe-adbb-000511f95e92
+			defaultHierarchy: LocalDateTable_45c14f08-816c-47ba-b4bd-249e438384ac.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column order_purchase_date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: f1f3c246-fcb5-418d-b7b8-94603b7f2ae5
+		summarizeBy: none
+		sourceColumn: order_purchase_date
+
+		variation Variation
+			isDefault
+			relationship: 78cc5020-af6c-48b9-9413-45abc7a96c58
+			defaultHierarchy: LocalDateTable_cada49ea-a374-41ca-b834-48ce4d28fe69.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column delivery_days
+		dataType: int64
+		formatString: 0
+		lineageTag: 04bfd872-f803-4a88-9d8b-557a808675b2
+		summarizeBy: sum
+		sourceColumn: delivery_days
+
+		annotation SummarizationSetBy = Automatic
+
+	column delivery_delay_days
+		dataType: int64
+		formatString: 0
+		lineageTag: 831ed74e-f25a-4111-9daa-667945a17255
+		summarizeBy: sum
+		sourceColumn: delivery_delay_days
+
+		annotation SummarizationSetBy = Automatic
+
+	column item_count
+		dataType: int64
+		formatString: 0
+		lineageTag: d2b0267d-778f-4de6-b765-d86ef9fea156
+		summarizeBy: sum
+		sourceColumn: item_count
+
+		annotation SummarizationSetBy = Automatic
+
+	column distinct_product_count
+		dataType: int64
+		formatString: 0
+		lineageTag: f978978f-f0ec-4140-be4c-974c3c4c4adb
+		summarizeBy: sum
+		sourceColumn: distinct_product_count
+
+		annotation SummarizationSetBy = Automatic
+
+	column distinct_seller_count
+		dataType: int64
+		formatString: 0
+		lineageTag: 30659849-f0f1-4a6b-8099-00f0ca1166a1
+		summarizeBy: sum
+		sourceColumn: distinct_seller_count
+
+		annotation SummarizationSetBy = Automatic
+
+	column merchandise_value
+		dataType: double
+		lineageTag: 90da9f2e-5867-4938-b815-d70908203524
+		summarizeBy: sum
+		sourceColumn: merchandise_value
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column freight_value
+		dataType: double
+		lineageTag: 692a5fad-8add-48cf-acf5-1b5f8292bebd
+		summarizeBy: sum
+		sourceColumn: freight_value
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column total_item_value
+		dataType: double
+		lineageTag: 5716c42c-66d5-4cfb-ae01-5be9020268f3
+		summarizeBy: sum
+		sourceColumn: total_item_value
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column total_payment_value
+		dataType: double
+		lineageTag: 643949e8-f6e6-49b0-80b3-ed465f0d0e03
+		summarizeBy: sum
+		sourceColumn: total_payment_value
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column payment_record_count
+		dataType: int64
+		formatString: 0
+		lineageTag: 5e35b6f0-ae3f-4465-9168-239a312dc8e3
+		summarizeBy: sum
+		sourceColumn: payment_record_count
+
+		annotation SummarizationSetBy = Automatic
+
+	column max_payment_installments
+		dataType: int64
+		formatString: 0
+		lineageTag: 089db7d4-c62e-48f8-8df3-9b1c312917fb
+		summarizeBy: sum
+		sourceColumn: max_payment_installments
+
+		annotation SummarizationSetBy = Automatic
+
+	column payment_type_count
+		dataType: int64
+		formatString: 0
+		lineageTag: 49387ca9-d894-4613-9ebc-7ca44c91c709
+		summarizeBy: sum
+		sourceColumn: payment_type_count
+
+		annotation SummarizationSetBy = Automatic
+
+	column primary_payment_type
+		dataType: string
+		lineageTag: be053bc7-0778-47e6-a228-f57a1b8f6d76
+		summarizeBy: none
+		sourceColumn: primary_payment_type
+
+		annotation SummarizationSetBy = Automatic
+
+	column payment_item_difference
+		dataType: double
+		lineageTag: e962f24c-a749-4156-8575-5ca21cf2c4e8
+		summarizeBy: sum
+		sourceColumn: payment_item_difference
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Delivery Status' =
+			IF(
+			    fct_orders[order_status] <> "delivered",
+			    "Not Delivered",
+			    IF(
+			        ISBLANK(fct_orders[delivery_delay_days]),
+			        "Unknown",
+			        IF(
+			            fct_orders[delivery_delay_days] > 0,
+			            "Late",
+			            "On Time"
+			        )
+			    )
+			)
+		lineageTag: afa841bc-283f-49df-b990-210b90538ccf
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition fct_orders = m
+		mode: import
+		source =
+				let
+				    Source = GoogleBigQuery.Database([Implementation="2.0"]),
+				    #"mda-platform-2026_Database" = Source{[Name="mda-platform-2026",Kind="Database"]}[Data],
+				    analytics_dev_Schema = #"mda-platform-2026_Database"{[Name="analytics_dev",Kind="Schema"]}[Data],
+				    fct_orders_Table = analytics_dev_Schema{[Name="fct_orders",Kind="Table"]}[Data]
+				in
+				    fct_orders_Table
+
+	annotation PBI_ResultType = Table
+

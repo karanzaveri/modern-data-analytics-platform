@@ -1,0 +1,153 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.1.0/schema.json",
+  "name": "9f6b2e71a4304c8db520",
+  "displayName": "Geography Performance",
+  "displayOption": "FitToPage",
+  "height": 1080,
+  "width": 1920,
+  "objects": {
+    "background": [
+      {
+        "properties": {
+          "color": {
+            "solid": {
+              "color": {
+                "expr": {
+                  "Literal": {
+                    "Value": "'#F4F6F8'"
+                  }
+                }
+              }
+            }
+          },
+          "transparency": {
+            "expr": {
+              "Literal": {
+                "Value": "0D"
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  "visualInteractions": [
+    {
+      "source": "9f6b2e71a4304c8d000a",
+      "target": "9f6b2e71a4304c8d0002",
+      "type": "DataFilter"
+    },
+    {
+      "source": "9f6b2e71a4304c8d000a",
+      "target": "9f6b2e71a4304c8d0003",
+      "type": "DataFilter"
+    },
+    {
+      "source": "9f6b2e71a4304c8d000a",
+      "target": "9f6b2e71a4304c8d0004",
+      "type": "DataFilter"
+    },
+    {
+      "source": "9f6b2e71a4304c8d000a",
+      "target": "9f6b2e71a4304c8d0005",
+      "type": "DataFilter"
+    },
+    {
+      "source": "9f6b2e71a4304c8d000a",
+      "target": "9f6b2e71a4304c8d0006",
+      "type": "DataFilter"
+    },
+    {
+      "source": "9f6b2e71a4304c8d000a",
+      "target": "9f6b2e71a4304c8d0007",
+      "type": "DataFilter"
+    },
+    {
+      "source": "9f6b2e71a4304c8d000a",
+      "target": "9f6b2e71a4304c8d0008",
+      "type": "DataFilter"
+    },
+    {
+      "source": "9f6b2e71a4304c8d000a",
+      "target": "9f6b2e71a4304c8d0009",
+      "type": "DataFilter"
+    }
+  ],
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "ee97d8ad0cb44bbb8e7d",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "fct_orders"
+              }
+            },
+            "Property": "order_purchase_date"
+          }
+        },
+        "type": "Advanced",
+        "howCreated": "User",
+        "filter": {
+          "Version": 2,
+          "From": [
+            {
+              "Name": "f",
+              "Entity": "fct_orders",
+              "Type": 0
+            }
+          ],
+          "Where": [
+            {
+              "Condition": {
+                "And": {
+                  "Left": {
+                    "Comparison": {
+                      "ComparisonKind": 2,
+                      "Left": {
+                        "Column": {
+                          "Expression": {
+                            "SourceRef": {
+                              "Source": "f"
+                            }
+                          },
+                          "Property": "order_purchase_date"
+                        }
+                      },
+                      "Right": {
+                        "Literal": {
+                          "Value": "datetime'2017-01-01T00:00:00'"
+                        }
+                      }
+                    }
+                  },
+                  "Right": {
+                    "Comparison": {
+                      "ComparisonKind": 3,
+                      "Left": {
+                        "Column": {
+                          "Expression": {
+                            "SourceRef": {
+                              "Source": "f"
+                            }
+                          },
+                          "Property": "order_purchase_date"
+                        }
+                      },
+                      "Right": {
+                        "Literal": {
+                          "Value": "datetime'2018-09-01T00:00:00'"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

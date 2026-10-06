@@ -1,0 +1,37 @@
+model Model
+	culture: en-IN
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: en-IN
+	valueFilterBehavior: independent
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBI_QueryOrder = ["monthly_revenue_reporting","customer_metrics","fct_orders","dim_products","dim_sellers","fct_order_items"]
+
+annotation PBI_ProTooling = ["DevMode"]
+
+ref table monthly_revenue_reporting
+ref table DateTableTemplate_ae7283c8-c7c1-42ab-9db8-c44e38ba7c13
+ref table LocalDateTable_909f15cd-a681-4697-b219-2bce61c0bd36
+ref table LocalDateTable_6dc0f006-0e7c-4f21-b053-86e1e5076c42
+ref table customer_metrics
+ref table LocalDateTable_49fca1f4-aeb0-4932-a6f0-ac8ea831fd80
+ref table LocalDateTable_c6b9aef5-f7bb-464c-81a5-288a6018404d
+ref table fct_orders
+ref table LocalDateTable_69a9c8be-eb15-4f1f-b12a-a1e183e1b85d
+ref table LocalDateTable_52681298-7284-4559-8a4a-5c9beeb1df48
+ref table LocalDateTable_11452621-deeb-46a5-be24-729a6afda59f
+ref table LocalDateTable_6c68cb8d-cd3b-40c7-8fe2-a2b26cbee456
+ref table LocalDateTable_45c14f08-816c-47ba-b4bd-249e438384ac
+ref table LocalDateTable_cada49ea-a374-41ca-b834-48ce4d28fe69
+ref table dim_products
+ref table dim_sellers
+ref table fct_order_items
+ref table LocalDateTable_20ab87fa-d630-4ffa-84fe-c18e709bab6f
+ref table LocalDateTable_949192f2-900f-46b6-ab67-3baa7a5358ba
+
+ref cultureInfo en-IN
+

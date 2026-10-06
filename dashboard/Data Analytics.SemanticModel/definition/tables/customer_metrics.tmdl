@@ -1,0 +1,149 @@
+table customer_metrics
+	lineageTag: b1c4d0ea-6ed7-4851-997a-e64c44ec425c
+
+	measure 'Repeat Customer Rate' =
+			
+			DIVIDE(
+			    CALCULATE(
+			        COUNT(customer_metrics[customer_unique_id]),
+			        customer_metrics[order_count] > 1
+			    ),
+			    COUNT(customer_metrics[customer_unique_id])
+			)
+		formatString: 0.00%
+		lineageTag: 9c039829-51fc-4bff-a746-494505b6704d
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column customer_unique_id
+		dataType: string
+		lineageTag: a350065c-c80c-48d0-af88-ac2235517b3f
+		summarizeBy: none
+		sourceColumn: customer_unique_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column first_order_date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: dcc9c16e-830a-4590-9aa0-c54364ddd121
+		summarizeBy: none
+		sourceColumn: first_order_date
+
+		variation Variation
+			isDefault
+			relationship: a0d6f1ba-be43-47fb-99d0-2f38f8315397
+			defaultHierarchy: LocalDateTable_49fca1f4-aeb0-4932-a6f0-ac8ea831fd80.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column last_order_date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 947dbd90-2e60-4f06-92bc-a6c404f22337
+		summarizeBy: none
+		sourceColumn: last_order_date
+
+		variation Variation
+			isDefault
+			relationship: bb832b49-dfaf-48b0-9cd3-08fc450adfde
+			defaultHierarchy: LocalDateTable_c6b9aef5-f7bb-464c-81a5-288a6018404d.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column order_count
+		dataType: int64
+		formatString: 0
+		lineageTag: f26c269e-edba-43e0-879b-e1d0c8169338
+		summarizeBy: sum
+		sourceColumn: order_count
+
+		annotation SummarizationSetBy = Automatic
+
+	column delivered_order_count
+		dataType: int64
+		formatString: 0
+		lineageTag: a6b6f94b-f5b2-4f8e-9747-e5ff3452690e
+		summarizeBy: sum
+		sourceColumn: delivered_order_count
+
+		annotation SummarizationSetBy = Automatic
+
+	column orders_missing_payment
+		dataType: int64
+		formatString: 0
+		lineageTag: 8801d97d-dc6f-4649-8037-a03d1c240698
+		summarizeBy: sum
+		sourceColumn: orders_missing_payment
+
+		annotation SummarizationSetBy = Automatic
+
+	column total_spend
+		dataType: double
+		lineageTag: 46c7864e-34ae-47fb-8ad0-5a5a061600f2
+		summarizeBy: sum
+		sourceColumn: total_spend
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column average_order_value
+		dataType: double
+		lineageTag: cdecb8a0-32e5-475d-8d01-a8c24d1c183f
+		summarizeBy: sum
+		sourceColumn: average_order_value
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column total_merchandise_value
+		dataType: double
+		lineageTag: 65717173-2240-4e12-a6d5-c49c478e45b2
+		summarizeBy: sum
+		sourceColumn: total_merchandise_value
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column total_freight_value
+		dataType: double
+		lineageTag: caaf74bf-8798-4a15-b67e-f6c3086702a9
+		summarizeBy: sum
+		sourceColumn: total_freight_value
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Customer Type' =
+			
+			IF(
+			    customer_metrics[order_count] > 1,
+			    "Repeat Customer",
+			    "One-time Customer"
+			)
+		lineageTag: 0dc264fd-83c3-4b46-ad9a-de80e34550c2
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition customer_metrics = m
+		mode: import
+		source =
+				let
+				    Source = GoogleBigQuery.Database([Implementation="2.0"]),
+				    #"mda-platform-2026_Database" = Source{[Name="mda-platform-2026",Kind="Database"]}[Data],
+				    analytics_dev_Schema = #"mda-platform-2026_Database"{[Name="analytics_dev",Kind="Schema"]}[Data],
+				    customer_metrics_Table = analytics_dev_Schema{[Name="customer_metrics",Kind="Table"]}[Data]
+				in
+				    customer_metrics_Table
+
+	annotation PBI_ResultType = Table
+

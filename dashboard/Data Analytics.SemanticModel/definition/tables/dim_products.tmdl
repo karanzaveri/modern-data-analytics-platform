@@ -1,0 +1,97 @@
+table dim_products
+	lineageTag: 0bdfb01a-8061-4377-8861-be7056409365
+
+	column product_id
+		dataType: string
+		lineageTag: f9ec6aa1-ccc0-4759-bebc-240b03051db7
+		summarizeBy: none
+		sourceColumn: product_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column product_category_name
+		dataType: string
+		lineageTag: d6e58309-e8d7-443d-bf33-c7651089068c
+		summarizeBy: none
+		sourceColumn: product_category_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column product_name_length
+		dataType: int64
+		formatString: 0
+		lineageTag: 2eeb256b-0293-47ca-a26b-4edf1cea7913
+		summarizeBy: none
+		sourceColumn: product_name_length
+
+		annotation SummarizationSetBy = Automatic
+
+	column product_description_length
+		dataType: int64
+		formatString: 0
+		lineageTag: 044f096d-0e25-42f4-9ae9-358f8f2b6bf3
+		summarizeBy: none
+		sourceColumn: product_description_length
+
+		annotation SummarizationSetBy = Automatic
+
+	column product_photos_qty
+		dataType: int64
+		formatString: 0
+		lineageTag: 891c8284-b0dc-4ae2-b082-beca20e3f8a1
+		summarizeBy: none
+		sourceColumn: product_photos_qty
+
+		annotation SummarizationSetBy = Automatic
+
+	column product_weight_g
+		dataType: double
+		lineageTag: d4cd6545-9991-426e-8a20-1b7de4728025
+		summarizeBy: none
+		sourceColumn: product_weight_g
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column product_length_cm
+		dataType: double
+		lineageTag: c8a4096b-72fc-47b4-97ff-aac111a01fb5
+		summarizeBy: none
+		sourceColumn: product_length_cm
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column product_height_cm
+		dataType: double
+		lineageTag: f1465944-6fd7-4902-9974-7a4fb5e9090e
+		summarizeBy: none
+		sourceColumn: product_height_cm
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column product_width_cm
+		dataType: double
+		lineageTag: 0add6a7a-f8c6-4b48-a8b1-193803c09471
+		summarizeBy: none
+		sourceColumn: product_width_cm
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition dim_products = m
+		mode: import
+		source =
+				let
+				  Source = GoogleBigQuery.Database([Implementation = "2.0"]),
+				  #"Navigation 1" = Source{[Name = "mda-platform-2026", Kind = "Database"]}[Data],
+				  #"Navigation 2" = #"Navigation 1"{[Name = "analytics_dev", Kind = "Schema"]}[Data],
+				  #"Navigation 3" = #"Navigation 2"{[Name = "dim_products", Kind = "Table"]}[Data]
+				in
+				  #"Navigation 3"
+

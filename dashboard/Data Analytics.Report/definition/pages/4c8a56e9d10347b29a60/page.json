@@ -1,0 +1,203 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.1.0/schema.json",
+  "name": "4c8a56e9d10347b29a60",
+  "displayName": "Product & Seller Performance",
+  "displayOption": "FitToPage",
+  "height": 1080,
+  "width": 1920,
+  "objects": {
+    "background": [
+      {
+        "properties": {
+          "color": {
+            "solid": {
+              "color": {
+                "expr": {
+                  "Literal": {
+                    "Value": "'#F4F6F8'"
+                  }
+                }
+              }
+            }
+          },
+          "transparency": {
+            "expr": {
+              "Literal": {
+                "Value": "0D"
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  "visualInteractions": [
+    {
+      "source": "4c8a56e9d10347b2000a",
+      "target": "4c8a56e9d10347b20002",
+      "type": "DataFilter"
+    },
+    {
+      "source": "4c8a56e9d10347b2000a",
+      "target": "4c8a56e9d10347b20003",
+      "type": "DataFilter"
+    },
+    {
+      "source": "4c8a56e9d10347b2000a",
+      "target": "4c8a56e9d10347b20004",
+      "type": "DataFilter"
+    },
+    {
+      "source": "4c8a56e9d10347b2000a",
+      "target": "4c8a56e9d10347b20005",
+      "type": "DataFilter"
+    },
+    {
+      "source": "4c8a56e9d10347b2000a",
+      "target": "4c8a56e9d10347b20006",
+      "type": "DataFilter"
+    },
+    {
+      "source": "4c8a56e9d10347b2000a",
+      "target": "4c8a56e9d10347b20007",
+      "type": "DataFilter"
+    },
+    {
+      "source": "4c8a56e9d10347b2000a",
+      "target": "4c8a56e9d10347b20008",
+      "type": "DataFilter"
+    },
+    {
+      "source": "4c8a56e9d10347b2000a",
+      "target": "4c8a56e9d10347b20009",
+      "type": "DataFilter"
+    },
+    {
+      "source": "4c8a56e9d10347b2000a",
+      "target": "4c8a56e9d10347b2000b",
+      "type": "DataFilter"
+    },
+    {
+      "source": "4c8a56e9d10347b2000b",
+      "target": "4c8a56e9d10347b20002",
+      "type": "DataFilter"
+    },
+    {
+      "source": "4c8a56e9d10347b2000b",
+      "target": "4c8a56e9d10347b20003",
+      "type": "DataFilter"
+    },
+    {
+      "source": "4c8a56e9d10347b2000b",
+      "target": "4c8a56e9d10347b20004",
+      "type": "DataFilter"
+    },
+    {
+      "source": "4c8a56e9d10347b2000b",
+      "target": "4c8a56e9d10347b20005",
+      "type": "DataFilter"
+    },
+    {
+      "source": "4c8a56e9d10347b2000b",
+      "target": "4c8a56e9d10347b20006",
+      "type": "DataFilter"
+    },
+    {
+      "source": "4c8a56e9d10347b2000b",
+      "target": "4c8a56e9d10347b20007",
+      "type": "DataFilter"
+    },
+    {
+      "source": "4c8a56e9d10347b2000b",
+      "target": "4c8a56e9d10347b20008",
+      "type": "DataFilter"
+    },
+    {
+      "source": "4c8a56e9d10347b2000b",
+      "target": "4c8a56e9d10347b20009",
+      "type": "DataFilter"
+    },
+    {
+      "source": "4c8a56e9d10347b2000b",
+      "target": "4c8a56e9d10347b2000a",
+      "type": "DataFilter"
+    }
+  ],
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "cc83bc2640fb4b56a430",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "fct_order_items"
+              }
+            },
+            "Property": "order_purchase_timestamp"
+          }
+        },
+        "type": "Advanced",
+        "howCreated": "User",
+        "filter": {
+          "Version": 2,
+          "From": [
+            {
+              "Name": "f",
+              "Entity": "fct_order_items",
+              "Type": 0
+            }
+          ],
+          "Where": [
+            {
+              "Condition": {
+                "And": {
+                  "Left": {
+                    "Comparison": {
+                      "ComparisonKind": 2,
+                      "Left": {
+                        "Column": {
+                          "Expression": {
+                            "SourceRef": {
+                              "Source": "f"
+                            }
+                          },
+                          "Property": "order_purchase_timestamp"
+                        }
+                      },
+                      "Right": {
+                        "Literal": {
+                          "Value": "datetime'2017-01-01T00:00:00'"
+                        }
+                      }
+                    }
+                  },
+                  "Right": {
+                    "Comparison": {
+                      "ComparisonKind": 3,
+                      "Left": {
+                        "Column": {
+                          "Expression": {
+                            "SourceRef": {
+                              "Source": "f"
+                            }
+                          },
+                          "Property": "order_purchase_timestamp"
+                        }
+                      },
+                      "Right": {
+                        "Literal": {
+                          "Value": "datetime'2018-09-01T00:00:00'"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

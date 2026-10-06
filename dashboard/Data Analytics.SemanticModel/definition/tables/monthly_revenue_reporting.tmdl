@@ -1,0 +1,166 @@
+table monthly_revenue_reporting
+	lineageTag: 84487c7c-4ebf-4938-a5b0-233d79d66d21
+
+	measure 'Total Delivered Revenue' = SUM(monthly_revenue_reporting[delivered_revenue])
+		formatString: #,0.00
+		lineageTag: 9eacfc39-a013-4b58-a47e-32aaea96557e
+
+	measure 'Total Delivered Orders' = SUM(monthly_revenue_reporting[delivered_order_count])
+		formatString: #,0
+		lineageTag: 0d050f6e-efbc-48d9-9786-899bbc9657d0
+
+	measure 'Delivered AOV' = DIVIDE([Total Delivered Revenue], [Total Delivered Orders])
+		formatString: #,0.00
+		lineageTag: 84294e18-263d-40a5-8e4b-c6949cb96d22
+
+	column order_month
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: edadd663-88a7-41b8-b1db-f9c9131b0b10
+		summarizeBy: none
+		sourceColumn: order_month
+
+		variation Variation
+			isDefault
+			relationship: 46b769c0-dbaf-41e1-ba8e-f99acdd7dace
+			defaultHierarchy: LocalDateTable_909f15cd-a681-4697-b219-2bce61c0bd36.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column order_count
+		dataType: int64
+		formatString: 0
+		lineageTag: 449a4631-29e4-4ee0-a05b-46511b98f983
+		summarizeBy: sum
+		sourceColumn: order_count
+
+		annotation SummarizationSetBy = Automatic
+
+	column delivered_order_count
+		dataType: int64
+		formatString: 0
+		lineageTag: 95dcfc05-5bb1-488a-a662-bbeafee49b2d
+		summarizeBy: sum
+		sourceColumn: delivered_order_count
+
+		annotation SummarizationSetBy = Automatic
+
+	column unique_customers
+		dataType: int64
+		formatString: 0
+		lineageTag: b9164c69-83e8-4699-8633-233264e0dc6e
+		summarizeBy: sum
+		sourceColumn: unique_customers
+
+		annotation SummarizationSetBy = Automatic
+
+	column delivered_revenue
+		dataType: double
+		lineageTag: aad7ce1f-faa3-466e-87a5-784eba3517c7
+		summarizeBy: sum
+		sourceColumn: delivered_revenue
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column delivered_average_order_value
+		dataType: double
+		lineageTag: 24dbca44-6da8-40e9-9e5c-af26a6c2ff00
+		summarizeBy: sum
+		sourceColumn: delivered_average_order_value
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column delivered_merchandise_value
+		dataType: double
+		lineageTag: fe211d09-231d-46c5-a891-40327f48259b
+		summarizeBy: sum
+		sourceColumn: delivered_merchandise_value
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column delivered_freight_value
+		dataType: double
+		lineageTag: 2a83b960-78c0-47d1-99e1-615f53aa8889
+		summarizeBy: sum
+		sourceColumn: delivered_freight_value
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column previous_order_month
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: f05a6a95-6dd4-48af-89bb-6388f6d0f701
+		summarizeBy: none
+		sourceColumn: previous_order_month
+
+		variation Variation
+			isDefault
+			relationship: 8d8e3c44-2571-4037-9988-f3a67dac3f07
+			defaultHierarchy: LocalDateTable_6dc0f006-0e7c-4f21-b053-86e1e5076c42.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column previous_month_revenue
+		dataType: double
+		lineageTag: 9b99b5e1-7a22-47a2-89c4-ed048c90643e
+		summarizeBy: sum
+		sourceColumn: previous_month_revenue
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column previous_month_order_count
+		dataType: int64
+		formatString: 0
+		lineageTag: b9deaea3-3729-4b9a-8454-1ca1d86b6d0f
+		summarizeBy: sum
+		sourceColumn: previous_month_order_count
+
+		annotation SummarizationSetBy = Automatic
+
+	column revenue_growth_pct
+		dataType: double
+		lineageTag: d2f69641-9484-4c29-aa5f-b497553f0c26
+		summarizeBy: sum
+		sourceColumn: revenue_growth_pct
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column order_growth_pct
+		dataType: double
+		lineageTag: 890b31dc-0318-4cd6-8a2e-d4ee69aea23a
+		summarizeBy: sum
+		sourceColumn: order_growth_pct
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition monthly_revenue_reporting = m
+		mode: import
+		source =
+				let
+				    Source = GoogleBigQuery.Database([Implementation="2.0"]),
+				    #"mda-platform-2026_Database" = Source{[Name="mda-platform-2026",Kind="Database"]}[Data],
+				    analytics_dev_Schema = #"mda-platform-2026_Database"{[Name="analytics_dev",Kind="Schema"]}[Data],
+				    monthly_revenue_reporting_Table = analytics_dev_Schema{[Name="monthly_revenue_reporting",Kind="Table"]}[Data]
+				in
+				    monthly_revenue_reporting_Table
+
+	annotation PBI_ResultType = Table
+
