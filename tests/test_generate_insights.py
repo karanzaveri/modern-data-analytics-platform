@@ -173,9 +173,10 @@ def test_cli_invalid_month_fails_before_external_calls(monkeypatch, capsys):
     save_markdown.assert_not_called()
 
 
-def test_cli_default_month_uses_latest_kpis(monkeypatch):
+def test_cli_default_month_uses_latest_kpis(monkeypatch, capsys):
+    latest_kpis = {**KPIS, "order_month": "2018-08-01"}
     valid = response()
-    fetch = Mock(return_value=KPIS)
+    fetch = Mock(return_value=latest_kpis)
     generate = Mock(return_value=valid)
     monkeypatch.setattr("sys.argv", ["generate_insights"])
     monkeypatch.setattr(workflow, "fetch_kpis", fetch)
@@ -186,7 +187,27 @@ def test_cli_default_month_uses_latest_kpis(monkeypatch):
     workflow.main()
 
     fetch.assert_called_once_with(None)
-    generate.assert_called_once_with(KPIS)
+    generate.assert_called_once_with(latest_kpis)
+    assert "Reporting month: 2018-08" in capsys.readouterr().out
+
+
+def test_cli_no_kpi_rows_fails_before_generation_or_output(monkeypatch):
+    fetch = Mock(side_effect=ValueError("No KPI rows returned from BigQuery."))
+    generate = Mock()
+    save_json = Mock()
+    save_markdown = Mock()
+    monkeypatch.setattr("sys.argv", ["generate_insights"])
+    monkeypatch.setattr(workflow, "fetch_kpis", fetch)
+    monkeypatch.setattr(workflow, "generate_insights", generate)
+    monkeypatch.setattr(workflow, "save_insights", save_json)
+    monkeypatch.setattr(workflow, "save_markdown_report", save_markdown)
+
+    with pytest.raises(ValueError, match="No KPI rows returned from BigQuery"):
+        workflow.main()
+    fetch.assert_called_once_with(None)
+    generate.assert_not_called()
+    save_json.assert_not_called()
+    save_markdown.assert_not_called()
 
 
 @pytest.mark.parametrize("observation_count", [3, 4])

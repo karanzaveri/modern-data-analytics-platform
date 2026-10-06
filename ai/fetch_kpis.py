@@ -28,6 +28,7 @@ def validate_month(month: str) -> str:
 
 
 def fetch_kpis(month: str | None = None):
+    """Fetch the requested month, or the latest KPI row when month is omitted."""
     client = bigquery.Client(project=PROJECT_ID)
 
     where_clause = ""

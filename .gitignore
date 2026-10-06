@@ -27,4 +27,3 @@ target/
 dbt_packages/
 
 ai/outputs/
-ai/outputs/

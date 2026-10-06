@@ -253,6 +253,7 @@ def main() -> None:
     args = parse_args()
 
     kpis = fetch_kpis(args.month)
+    print(f"Reporting month: {kpis['order_month'][:7]}")
     insights = generate_validated_insights(kpis)
 
     json_path = save_insights(insights, kpis)
