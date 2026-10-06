@@ -2,7 +2,7 @@
 
 ## Overview
 
-An analytics engineering portfolio project that loads Olist e-commerce data into BigQuery, transforms it into tested analytical datasets with dbt, and presents the results in an implemented Power BI dashboard. A separate Python pipeline ingests Frankfurter exchange rates. Docker, a portable Airflow DAG, and GitHub Actions support local execution and validation.
+An analytics engineering portfolio project using Python ingestion, BigQuery, and dbt analytical modelling to power an implemented Power BI dashboard and validated AI-generated monthly business insights. A separate Python pipeline ingests Frankfurter exchange rates. Airflow orchestrates FX ingestion, dbt execution and testing, and AI insight generation; Docker and GitHub Actions support local execution and validation.
 
 This is a locally validated portfolio project, not a production deployment.
 
@@ -18,7 +18,7 @@ This is a locally validated portfolio project, not a production deployment.
 
 ![Olist Analytics Engineering Platform architecture](docs/images/architecture-diagram.png)
 
-The diagram shows the Olist pipeline, separate FX pipeline, local/external Airflow orchestration, and GitHub Actions CI. The implemented Olist flow continues from the BigQuery/dbt analytical layer to the Power BI dashboard.
+The diagram shows the Olist pipeline, separate FX pipeline, local/external Airflow orchestration, and GitHub Actions CI. The implemented analytics flow continues from the BigQuery/dbt analytical layer to Power BI for stakeholder reporting and Gemini-based validated business insight generation. Airflow orchestrates FX ingestion, dbt execution and testing, and AI insight generation.
 
 Olist and FX are separate pipelines. FX rates are not used in Olist revenue calculations. Airflow sequences their execution; this does not imply a data dependency between FX and the Olist models.
 
@@ -35,7 +35,9 @@ Olist and FX are separate pipelines. FX rates are not used in Olist revenue calc
 | BigQuery SQL | Analytical storage and transformations |
 | dbt Core, dbt-bigquery, Jinja | Dependencies, materializations, macros, data tests |
 | Power BI Desktop, PBIP/PBIR | Stakeholder-facing dashboard using the BigQuery/dbt analytical layer |
-| pytest | Python helper and ingestion-configuration tests |
+| Gemini / Google GenAI | Structured business commentary from trusted KPIs |
+| Pydantic | Structured AI response validation |
+| pytest | Ingestion, KPI retrieval, AI validation, and Airflow integration tests |
 | Apache Airflow | External/local orchestration |
 | Docker Compose | Local Python/dbt runtime |
 | GitHub Actions | pytest and dbt parse on pushes and pull requests |
@@ -44,9 +46,10 @@ Olist and FX are separate pipelines. FX rates are not used in Olist revenue calc
 
 1. The Olist loader applies explicit schemas and replaces nine raw tables using `WRITE_TRUNCATE`.
 2. Staging exposes source fields and standardizes selected names. Intermediate models enrich records and aggregate payments and items to order grain.
-3. Marts provide facts, dimensions, customer metrics, and monthly reporting datasets.
-4. The Power BI dashboard imports the validated analytical tables from BigQuery for executive, delivery, geography, and product/seller reporting.
-5. Independently, the FX runner validates API responses, saves raw JSON, and appends normalized currency rows. A date-level existence check skips previously loaded dates.
+3. dbt marts calculate trusted business metrics and provide facts, dimensions, customer metrics, and monthly reporting datasets.
+4. After dbt validation, Python fetches monthly reporting KPIs from BigQuery. Gemini generates narrative only; Pydantic checks the response structure and deterministic Python validation rejects unsupported numerical claims, including unsupported derived numbers. Validated JSON and Markdown reports are saved.
+5. Separately, the Power BI dashboard imports the validated analytical tables from BigQuery for executive, delivery, geography, and product/seller reporting.
+6. Independently, the FX runner validates API responses, saves raw JSON, and appends normalized currency rows. A date-level existence check skips previously loaded dates.
 
 ## dbt model architecture
 
@@ -88,13 +91,28 @@ The report contains four stakeholder-facing pages with consistent page navigatio
 
 ![Power BI Product & Seller Performance showing merchandise KPIs, leading categories and sellers, and category detail](docs/images/powerbi-product-seller-performance.jpg)
 
+## AI-generated monthly insights
+
+The workflow reads BigQuery/dbt monthly reporting KPIs from `monthly_revenue_reporting`. Python retrieves and formats the trusted metrics; Gemini produces structured stakeholder commentary without calculating new metrics.
+
+From the repository root, generate the latest available reporting month or request a specific month:
+
+```bash
+python -m ai.generate_insights
+python -m ai.generate_insights --month YYYY-MM
+```
+
+Pydantic enforces the response contract. A deterministic numeric validator rejects unsupported numbers, including fabricated or unsupported derived values, and retries generation once when numeric validation fails. The same validated response and KPI payload produce synchronized JSON and Markdown reports in `ai/outputs/`; generated files are excluded from version control.
+
+The design principle is: **Warehouse / Python = facts and calculations; Gemini = narrative; Python validation = grounding gate.** Live execution requires BigQuery authentication, Google GenAI and Pydantic dependencies, and `GEMINI_API_KEY` in the environment.
+
 ## Airflow orchestration
 
 The DAG is included at `orchestration/airflow/dags/fx_pipeline.py`. Airflow runs externally/locally, for example in WSL; it is not containerized in this repository.
 
-The daily 07:00 schedule follows Airflow's configured timezone. Tasks use the logical date for FX ingestion, retry twice with a one-minute delay, and execute ingestion -> dbt run -> dbt test. Both dbt commands exclude `fct_orders_incremental`. Olist raw tables must already exist; the DAG does not load the Olist CSVs.
+The daily 07:00 schedule follows Airflow's configured timezone. Tasks retry twice with a one-minute delay and execute `run_fx_ingestion` -> `run_dbt_project` -> `test_dbt_project` -> `generate_ai_insights`. FX ingestion uses the logical date; the AI task runs after successful dbt tests and automatically selects the latest available reporting month. Both dbt commands exclude `fct_orders_incremental`. Olist raw tables must already exist; the DAG does not load the Olist CSVs.
 
-Paths are configurable. See [Airflow setup](orchestration/airflow/README.md). The portable repository DAG has passed syntax validation; that does not establish a deployed scheduler or a completed run of this copy.
+Paths are configurable. See [Airflow setup](orchestration/airflow/README.md). DagBag/import validation passed, and a real full four-task DAG run completed successfully locally. The AI task automatically resolved the reporting month, generated validated insights, and saved JSON and Markdown outputs. This is local validation evidence, not a production deployment.
 
 ## Docker usage
 
@@ -116,7 +134,7 @@ Compose mounts Windows host dbt and Google application-credential directories re
 
 ## Testing and CI
 
-- **Python:** 11 tests cover FX URL/date validation, payload transformation, and Olist table/schema configuration.
+- **Python:** 70 tests passed, covering ingestion, monthly KPI retrieval, structured AI responses, numeric grounding and retry behavior, report synchronization, and Airflow integration.
 - **dbt:** 95 data tests in total, covering nullability, uniqueness, accepted values, and relationships. The validated non-incremental path includes 91 tests; four tests belong to the excluded incremental demonstration.
 - **GitHub Actions:** installs `requirements-docker.txt`, runs pytest, creates a temporary placeholder profile, and runs `dbt parse`. CI does not connect to BigQuery or execute warehouse data tests.
 
@@ -154,11 +172,12 @@ dbt test --exclude fct_orders_incremental
 
 | Validation | Result |
 | --- | --- |
-| Python suite, including default Compose execution | 11 tests passed |
+| Python test suite | 70 passed |
 | Non-incremental dbt validation against BigQuery | 18 of 19 models and 91 of 95 data tests passed; incremental demonstration excluded |
 | `fct_order_items` against BigQuery | Table built successfully; approximately 112.7k rows; all 9 selected tests passed |
 | dbt parse, including Compose execution | Passed |
-| Portable repository Airflow DAG | Python syntax validation passed |
+| Airflow DAG | DagBag/import validation passed; full four-task local DAG execution completed successfully |
+| AI insights | Structured response validation, numeric grounding, and retry behavior verified; a successful local run generated synchronized JSON and Markdown reports |
 
 These are local validation results, not production deployment evidence or CI warehouse checks.
 
@@ -170,7 +189,8 @@ These are local validation results, not production deployment evidence or CI war
 - Reviews, geolocation, and category translations are loaded but not modeled downstream.
 - Python tests do not provide end-to-end API/warehouse coverage; CI does not validate SQL execution against BigQuery.
 - Power BI Service deployment and scheduled Power BI refresh are not configured in this repository.
-- AI-generated insights and production deployment are not implemented.
+- Production deployment is not implemented.
+- Live AI generation requires Gemini API availability and credentials; narrative quality depends on the configured model/API. Numeric grounding validation does not prove full semantic correctness.
 
 ## Future improvements
 
@@ -178,8 +198,9 @@ These are local validation results, not production deployment evidence or CI war
 - Add ingestion failure-path tests and stronger load reconciliation.
 - Extend incremental processing for updates and late arrivals.
 - Document stakeholder usage and report maintenance.
-- Add AI-generated insights based on validated analytical outputs.
-- Define production deployment, monitoring, and refresh operations.
+- Schedule delivery of generated reports, such as Slack/email delivery.
+- Strengthen semantic validation and AI evaluation.
+- Define production deployment, monitoring, observability, and refresh operations.
 - Extend model and test coverage for additional source tables.
 
 These are proposed improvements, not current capabilities.
@@ -193,6 +214,7 @@ analytics/
   models/intermediate/      Enrichment and aggregation
   models/marts/             Facts, dimensions, metrics, reporting
   macros/                   Reusable growth calculation
+ai/                        Validated AI insight generation and grounding logic
 orchestration/airflow/       Portable DAG and external setup notes
 dashboard/                  Power BI PBIP/PBIR report project
 tests/                      Python tests
