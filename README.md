@@ -73,12 +73,20 @@ The project contains **19 models and 95 dbt data tests in total**. The validated
 
 The implemented report is stored as a Power BI Project (PBIP/PBIR) under [dashboard/](dashboard/), with [Data Analytics.pbip](dashboard/Data%20Analytics.pbip) as the project entry point. It connects in Import mode to the dbt/BigQuery analytical layer and uses validated marts, facts, and dimensions: `monthly_revenue_reporting`, `customer_metrics`, `fct_orders`, `fct_order_items`, `dim_products`, and `dim_sellers`.
 
+### Dashboard preview
+
+![Power BI Executive Overview showing revenue and customer KPIs, monthly trends, and customer mix](docs/images/powerbi-executive-overview.jpg)
+
 The report contains four stakeholder-facing pages with consistent page navigation:
 
 - **Executive Overview:** delivered revenue, orders, customers, average order value, repeat customers, and monthly trends.
 - **Delivery Performance:** delivery times, late-delivery rates, delay days, delivery status, and state comparisons.
 - **Geography Performance:** state-level revenue, orders, customers, average order value, and delivery performance.
 - **Product & Seller Performance:** merchandise value, items, products, sellers, and category/seller-state analysis.
+
+[View the full four-page Power BI dashboard as PDF](docs/powerbi/olist-analytics-dashboard.pdf)
+
+![Power BI Product & Seller Performance showing merchandise KPIs, leading categories and sellers, and category detail](docs/images/powerbi-product-seller-performance.jpg)
 
 ## Airflow orchestration
 
@@ -169,7 +177,7 @@ These are local validation results, not production deployment evidence or CI war
 - Parameterize warehouse configuration and improve setup portability.
 - Add ingestion failure-path tests and stronger load reconciliation.
 - Extend incremental processing for updates and late arrivals.
-- Add dashboard screenshots and document stakeholder usage.
+- Document stakeholder usage and report maintenance.
 - Add AI-generated insights based on validated analytical outputs.
 - Define production deployment, monitoring, and refresh operations.
 - Extend model and test coverage for additional source tables.
