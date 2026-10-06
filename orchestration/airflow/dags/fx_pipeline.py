@@ -1,4 +1,4 @@
-"""Local/external Airflow orchestration for FX ingestion and dbt validation."""
+"""Local/external orchestration for FX, dbt, and validated AI insights."""
 
 from datetime import datetime, timedelta
 import logging
@@ -101,4 +101,20 @@ with DAG(
             cwd=dbt_directory(),
         )
 
-    run_fx_ingestion() >> run_dbt_project() >> test_dbt_project()
+    @task(trigger_rule="all_success")
+    def generate_ai_insights():
+        if not os.environ.get("GEMINI_API_KEY", "").strip():
+            raise ValueError(
+                "Set GEMINI_API_KEY in the Airflow worker process environment "
+                "before generating AI insights."
+            )
+        run_command(
+            [
+                os.environ.get("PROJECT_PYTHON", "/home/karan/venvs/mda_platform/bin/python"),
+                "-m",
+                "ai.generate_insights",
+            ],
+            cwd=project_directory(),
+        )
+
+    run_fx_ingestion() >> run_dbt_project() >> test_dbt_project() >> generate_ai_insights()

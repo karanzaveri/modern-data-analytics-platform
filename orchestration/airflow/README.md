@@ -17,9 +17,14 @@ Tasks execute sequentially:
    data, saves a raw JSON response, and loads BigQuery.
 2. `dbt run --exclude fct_orders_incremental` from the dbt project directory.
 3. `dbt test --exclude fct_orders_incremental` from the same directory.
+4. `python -m ai.generate_insights` from the repository root,
+   selecting the latest available `order_month` in `monthly_revenue_reporting`. This
+   runs only after all upstream tasks succeed. It reuses the AI CLI's numeric
+   validation and one built-in generation retry; failures propagate to Airflow.
+   Successful runs overwrite the month's JSON and Markdown files in `ai/outputs/`.
 
 Subprocess stdout/stderr is included in task logs, including on failure;
-failures propagate to Airflow for retry. Runs without a logical date fail
+failures propagate to Airflow for retry. FX ingestion runs without a logical date fail
 explicitly rather than silently ingesting the latest rates.
 
 The DAG does not load Olist CSVs. The existing Olist raw tables must already
@@ -30,15 +35,17 @@ be available. FX rates are currently independent of the Olist dbt models.
 Use a separate Airflow 3 installation supporting `airflow.sdk`, for example
 on Linux or WSL. The task worker needs access to this checkout, a Python
 environment with the ingestion dependencies, and a dbt executable with the
-BigQuery adapter. Airflow is not included in the repository requirements files.
+BigQuery adapter. The project Python environment also needs the AI dependencies.
+Airflow is not included in the repository requirements files.
 
 | Environment variable | Default / when required |
 | --- | --- |
 | `PROJECT_DIR` | Repository root derived from this DAG's location. Set an absolute checkout path if the DAG is copied elsewhere. |
-| `PROJECT_PYTHON` | Airflow worker's Python (`sys.executable`). Set an absolute Python executable path when ingestion uses a separate environment. |
+| `PROJECT_PYTHON` | Ingestion defaults to Airflow worker's Python (`sys.executable`); AI defaults to `/home/karan/venvs/mda_platform/bin/python`. Set an absolute executable path to override both. |
 | `DBT_EXECUTABLE` | `dbt` on the worker's `PATH`. Set an absolute executable path if needed. |
 | `DBT_PROJECT_DIR` | `PROJECT_DIR/analytics`; optional absolute override. |
 | `DBT_PROFILES_DIR` | Inherited by dbt. Set to the directory containing your `profiles.yml` if it is outside dbt's normal profile location. |
+| `GEMINI_API_KEY` | Required in the Airflow worker process environment for AI generation; inherited by the CLI, never included in command arguments. Missing or blank values fail before subprocess execution. |
 
 No custom path variables are mandatory when the DAG stays in this checkout
 and its default executables are available. Executable variables take a single
@@ -50,7 +57,14 @@ Provide an `analytics` dbt profile and BigQuery authentication through your
 existing external setup. Do not commit credentials or personal profiles.
 The ingestion loaders and dbt sources currently reference
 `mda-platform-2026`; configuring DAG paths does not change those warehouse
-identifiers. The worker also needs write access to `data/raw/fx` in the checkout.
+identifiers. The worker also needs write access to `data/raw/fx` and `ai/outputs`
+in the checkout. Supply the Gemini key through your existing external environment
+setup; do not put it in the DAG or commit it. AI reporting uses the latest KPI
+month independently of the Airflow logical date. An empty KPI mart causes a
+clear error. For a manual historical report, use `--month YYYY-MM`; an explicitly
+requested month must exist. The daily schedule generates the latest month's report
+repeatedly and retains the existing Airflow task retries in addition to the
+CLI's built-in retry.
 
 ## Point Airflow at the repository DAG
 
@@ -61,8 +75,8 @@ Airflow services:
 export PROJECT_DIR="$(pwd)"
 export AIRFLOW__CORE__DAGS_FOLDER="$PROJECT_DIR/orchestration/airflow/dags"
 # If using a separate project environment, configure its executables:
-# export PROJECT_PYTHON="/path/to/project-venv/bin/python"
-# export DBT_EXECUTABLE="/path/to/project-venv/bin/dbt"
+# export PROJECT_PYTHON="/home/karan/venvs/mda_platform/bin/python"
+# export DBT_EXECUTABLE="/home/karan/venvs/mda_platform/bin/dbt"
 # export DBT_PROFILES_DIR="/path/to/dbt-profile-directory"
 ```
 
@@ -73,7 +87,7 @@ directory for that Airflow installation; alternatively, symlink this DAG into
 your existing DAG directory and set `PROJECT_DIR` explicitly.
 
 Keep only one discovered DAG with the ID `fx_pipeline`; do not load both this
-copy and the original WSL copy. The external WSL DAG has not been changed.
+copy and the original WSL copy. The external WSL DAG also uses latest-month AI reporting.
 The schedule timezone follows your Airflow configuration, as in the original.
 
 The repository's GitHub Actions workflow runs pytest and dbt parse only. It
