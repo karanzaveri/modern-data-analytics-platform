@@ -18,7 +18,7 @@ This is a locally validated portfolio project, not a production deployment.
 
 ![Olist Analytics Engineering Platform architecture](docs/images/architecture-diagram.png)
 
-The diagram shows the Olist pipeline, separate FX pipeline, local/external Airflow orchestration, and GitHub Actions CI. The implemented analytics flow continues from the BigQuery/dbt analytical layer to Power BI for stakeholder reporting and Gemini-based validated business insight generation. Airflow orchestrates FX ingestion, dbt execution and testing, and AI insight generation.
+The infographic highlights the analytics trust problem and the workflow: Olist ingestion into BigQuery, dbt staging/intermediate/mart layers, Airflow orchestration, Power BI reporting, and validated Gemini-generated insights, alongside separate FX ingestion.
 
 Olist and FX are separate pipelines. FX rates are not used in Olist revenue calculations. Airflow sequences their execution; this does not imply a data dependency between FX and the Olist models.
 
@@ -80,6 +80,12 @@ The implemented report is stored as a Power BI Project (PBIP/PBIR) under [dashbo
 
 ![Power BI Executive Overview showing revenue and customer KPIs, monthly trends, and customer mix](docs/images/powerbi-executive-overview.jpg)
 
+![Power BI Delivery Performance showing delivery times, late-delivery rates, delivery status, and state comparisons](docs/images/powerbi-delivery-performance.jpg)
+
+![Power BI Geography Performance showing state-level revenue, delivered orders, and delivery performance](docs/images/powerbi-geography-performance.jpg)
+
+![Power BI Product & Seller Performance showing merchandise KPIs, leading categories and sellers, and category detail](docs/images/powerbi-product-seller-performance.jpg)
+
 The report contains four stakeholder-facing pages with consistent page navigation:
 
 - **Executive Overview:** delivered revenue, orders, customers, average order value, repeat customers, and monthly trends.
@@ -88,8 +94,6 @@ The report contains four stakeholder-facing pages with consistent page navigatio
 - **Product & Seller Performance:** merchandise value, items, products, sellers, and category/seller-state analysis.
 
 [View the full four-page Power BI dashboard as PDF](docs/powerbi/olist-analytics-dashboard.pdf)
-
-![Power BI Product & Seller Performance showing merchandise KPIs, leading categories and sellers, and category detail](docs/images/powerbi-product-seller-performance.jpg)
 
 ## AI-generated monthly insights
 
