@@ -16,7 +16,7 @@ This is a locally validated portfolio project, not a production deployment.
 
 ## Architecture
 
-![Olist Analytics Engineering Platform architecture](docs/images/architecture-diagram.png)
+![Olist Analytics Engineering Platform architecture](docs/images/analytics-platform-overview.png)
 
 The infographic highlights the analytics trust problem and the workflow: Olist ingestion into BigQuery, dbt staging/intermediate/mart layers, Airflow orchestration, Power BI reporting, and validated Gemini-generated insights, alongside separate FX ingestion.
 
