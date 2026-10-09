@@ -27,3 +27,6 @@ target/
 dbt_packages/
 
 ai/outputs/
+
+# Generated synthetic experiment artifacts
+experimentation/outputs/

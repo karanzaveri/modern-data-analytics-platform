@@ -11,6 +11,9 @@ COPY requirements-docker.txt .
 RUN pip install --no-cache-dir -r requirements-docker.txt
 
 COPY ingestion ./ingestion
+COPY experimentation ./experimentation
+COPY ai ./ai
+COPY orchestration ./orchestration
 COPY analytics ./analytics
 COPY tests ./tests
 
