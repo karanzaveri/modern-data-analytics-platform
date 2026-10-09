@@ -6,6 +6,13 @@ An analytics engineering portfolio project using Python ingestion, BigQuery, and
 
 This is a locally validated portfolio project, not a production deployment.
 
+A standalone [synthetic checkout A/B test case study](experimentation/CASE_STUDY.md)
+demonstrates sample-size planning, statistical inference, sample ratio mismatch,
+Monte Carlo power and false positives, and hypothetical business-impact and
+guardrail evaluation. It is separate from the Olist/FX warehouse pipelines and
+contains no real-company experiment or production deployment. See the
+[experimentation module](experimentation/README.md) for reproducible commands.
+
 ## Business questions
 
 - How do order volume, delivered revenue, and average order value change by purchase month?
@@ -138,7 +145,7 @@ Compose mounts Windows host dbt and Google application-credential directories re
 
 ## Testing and CI
 
-- **Python:** 70 tests passed, covering ingestion, monthly KPI retrieval, structured AI responses, numeric grounding and retry behavior, report synchronization, and Airflow integration.
+- **Python:** 377 tests passed, covering the original 70 ingestion, KPI, AI, and Airflow integration cases plus 307 standalone experimentation and documentation-figure cases.
 - **dbt:** 95 data tests in total, covering nullability, uniqueness, accepted values, and relationships. The validated non-incremental path includes 91 tests; four tests belong to the excluded incremental demonstration.
 - **GitHub Actions:** installs `requirements-docker.txt`, runs pytest, creates a temporary placeholder profile, and runs `dbt parse`. CI does not connect to BigQuery or execute warehouse data tests.
 
@@ -176,7 +183,7 @@ dbt test --exclude fct_orders_incremental
 
 | Validation | Result |
 | --- | --- |
-| Python test suite | 70 passed |
+| Python test suite | 377 passed, including the standalone experimentation module |
 | Non-incremental dbt validation against BigQuery | 18 of 19 models and 91 of 95 data tests passed; incremental demonstration excluded |
 | `fct_order_items` against BigQuery | Table built successfully; approximately 112.7k rows; all 9 selected tests passed |
 | dbt parse, including Compose execution | Passed |
@@ -219,6 +226,7 @@ analytics/
   models/marts/             Facts, dimensions, metrics, reporting
   macros/                   Reusable growth calculation
 ai/                        Validated AI insight generation and grounding logic
+experimentation/             Standalone synthetic A/B testing case study and tools
 orchestration/airflow/       Portable DAG and external setup notes
 dashboard/                  Power BI PBIP/PBIR report project
 tests/                      Python tests
