@@ -1,0 +1,113 @@
+version: 2
+
+models:
+  - name: customer_repeat_behavior
+    description: >-
+      One row per stable customer whose first observed delivered-purchase month is
+      on or before cohort_observation_end_date. Uses full-history assignments from
+      int_customer_cohorts and qualifying delivered customer-month activity through
+      the shared cutoff, without a restricted start date or timezone conversion.
+      Inherits the marts table materialization. The cutoff defaults to '2018-08-31'
+      and the shared macro requires a quoted YYYY-MM-DD calendar month-end.
+      This is a reporting convention, not proof of source completeness or mature
+      delivery outcomes; delivered status is the current source status, not a
+      historical status snapshot as of the cutoff. Cohort month is not an exact
+      first-order date and may not represent true acquisition before observed history.
+      Repeat purchase counts multiple orders, including within M0. Later-month
+      return counts activity in multiple calendar months. M1-M3 return is cumulative
+      across those three ages, whereas customer_cohort_retention measures periodic
+      activity at an individual age. These measures are not interchangeable.
+      To compare with the validated January 2017-May 2018 cohort references, filter
+      cohort_month >= DATE '2017-01-01' and cohort_month < DATE '2018-06-01' with the
+      default cutoff: 75,123 customers, 2,596 repeat purchasers, 1,612 later-month
+      returners and 790 M1-M3 returners. These are validation references, not model
+      constants. That cohort range has complete M3 follow-up at the default cutoff.
+
+    columns:
+      - name: customer_unique_id
+        description: Stable customer identity; exactly one row per qualifying customer.
+        data_tests:
+          - not_null
+          - unique
+          - relationships:
+              arguments:
+                to: ref('int_customer_cohorts')
+                field: customer_unique_id
+
+      - name: cohort_month
+        description: First observed delivered-purchase month, preserved from full history.
+        data_tests:
+          - not_null
+
+      - name: total_delivered_orders_through_cutoff
+        description: >-
+          Sum of distinct delivered-order counts across eligible purchase months,
+          including multiple orders within the same month. Positive integer.
+        data_tests:
+          - not_null
+          - positive
+          - integer
+
+      - name: active_month_count_through_cutoff
+        description: Number of distinct qualifying active calendar months through cutoff.
+        data_tests:
+          - not_null
+          - positive
+          - integer
+
+      - name: is_repeat_purchaser
+        description: >-
+          TRUE for at least two delivered orders through cutoff, even if both
+          purchases occurred within the cohort month. Otherwise FALSE.
+        data_tests:
+          - not_null
+
+      - name: has_returned_later_month
+        description: >-
+          TRUE for delivered-purchase activity in at least two calendar months
+          through cutoff. Same-month repeat purchases alone do not qualify.
+        data_tests:
+          - not_null
+
+      - name: has_returned_within_3_months
+        description: >-
+          TRUE for at least one delivered purchase in M1, M2 or M3, FALSE if none,
+          but only when follow-up includes the end of M3. NULL for every customer
+          with incomplete follow-up, including those with an already observed early
+          return. Aggregate rates must use only complete-follow-up customers as
+          the denominator; do not coalesce unknown outcomes to FALSE.
+
+      - name: first_return_month_age
+        description: >-
+          Smallest positive calendar-month age with delivered activity through
+          cutoff. NULL when no later-month return is observed; multiple M0 orders
+          do not establish a return. This remains available under incomplete M3
+          follow-up and is not the number of elapsed days to a second order.
+        data_tests:
+          - positive
+          - integer
+
+      - name: has_complete_3_month_followup
+        description: >-
+          TRUE when the configured cutoff is at least the last calendar day of M3,
+          calculated from cohort_month. This is nominal observation eligibility,
+          not a guarantee that instrumentation or source coverage is complete.
+        data_tests:
+          - not_null
+
+      - name: customer_segment
+        description: >-
+          Mutually exclusive and exhaustive segmentation of eligible customers
+          using delivered-purchase activity through the observation cutoff.
+          Single-purchase means exactly one delivered order. Same-month repeat
+          only means at least two delivered orders within one active calendar
+          month. Cross-month repeat means activity in at least two calendar
+          months. Applies to all eligible customers regardless of M3 follow-up.
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - Single-purchase
+                  - Same-month repeat only
+                  - Cross-month repeat
