@@ -4,10 +4,10 @@
   "position": {
     "x": 972,
     "y": 332,
-    "z": 7,
+    "z": 6000,
     "height": 332,
     "width": 884,
-    "tabOrder": 7
+    "tabOrder": 6000
   },
   "visual": {
     "visualType": "barChart",
@@ -722,104 +722,6 @@
           ]
         },
         "howCreated": "User"
-      },
-      {
-        "name": "42c89255678f51ce9f58",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "fct_order_items"
-              }
-            },
-            "Property": "seller_id"
-          }
-        },
-        "type": "Categorical"
-      },
-      {
-        "name": "061eaa9f027120eea1ed",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "fct_order_items"
-              }
-            },
-            "Property": "Delivered Merchandise Value"
-          }
-        },
-        "type": "Advanced"
-      },
-      {
-        "name": "093bacb543eb778b2890",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "fct_order_items"
-              }
-            },
-            "Property": "seller_id"
-          }
-        },
-        "type": "Categorical"
-      },
-      {
-        "name": "a73cf0eff95041906748",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "fct_order_items"
-              }
-            },
-            "Property": "Delivered Item Count"
-          }
-        },
-        "type": "Advanced"
-      },
-      {
-        "name": "afb56c01260aca10cf4b",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "fct_order_items"
-              }
-            },
-            "Property": "Delivered Item Orders"
-          }
-        },
-        "type": "Advanced"
-      },
-      {
-        "name": "f1bd3ab8b3b6c84ebbce",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "fct_order_items"
-              }
-            },
-            "Property": "Delivered Item Customers"
-          }
-        },
-        "type": "Advanced"
-      },
-      {
-        "name": "62f48f4ff9bc769658ee",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "fct_order_items"
-              }
-            },
-            "Property": "Delivered Freight Value"
-          }
-        },
-        "type": "Advanced"
       }
     ]
   }

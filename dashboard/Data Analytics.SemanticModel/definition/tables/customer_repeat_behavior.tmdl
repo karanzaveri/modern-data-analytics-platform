@@ -1,0 +1,162 @@
+table customer_repeat_behavior
+	lineageTag: 3d93b7be-754f-432a-aa68-aa998daa9930
+
+	measure 'Repeat Customers' =
+			VAR Cohorts =
+			    CALCULATETABLE(
+			        VALUES(customer_cohort_retention[cohort_month]),
+			        REMOVEFILTERS(customer_cohort_retention[activity_month]),
+			        REMOVEFILTERS(customer_cohort_retention[months_since_first_purchase])
+			    )
+			RETURN
+			    COALESCE(
+			        CALCULATE(
+			            DISTINCTCOUNT(customer_repeat_behavior[customer_unique_id]),
+			            KEEPFILTERS(
+			                TREATAS(Cohorts, customer_repeat_behavior[cohort_month])
+			            )
+			        ),
+			        0
+			    )
+		formatString: #,0
+		lineageTag: 48cdbb92-f34c-48c8-89d3-7f6d6cd3f98a
+
+	measure 'Single-purchase Customers' =
+			CALCULATE(
+			    [Repeat Customers],
+			    KEEPFILTERS(customer_repeat_behavior[customer_segment] = "Single-purchase")
+			)
+		formatString: #,0
+		lineageTag: 1a346bdb-ad49-4b0b-b36d-df9c2da481a0
+
+	measure 'Same-month Repeat Customers' =
+			CALCULATE(
+			    [Repeat Customers],
+			    KEEPFILTERS(customer_repeat_behavior[customer_segment] = "Same-month repeat only")
+			)
+		formatString: #,0
+		lineageTag: 5b958a2e-07cc-4584-bb4d-a109a25be7d9
+
+	measure 'Cross-month Repeat Customers' =
+			CALCULATE(
+			    [Repeat Customers],
+			    KEEPFILTERS(customer_repeat_behavior[customer_segment] = "Cross-month repeat")
+			)
+		formatString: #,0
+		lineageTag: d7c061ba-b101-47f7-abba-7e92863f51a0
+
+	measure 'Complete Three-month Follow-up Customers' =
+			CALCULATE(
+			    [Repeat Customers],
+			    KEEPFILTERS(customer_repeat_behavior[has_complete_3_month_followup] = TRUE())
+			)
+		formatString: #,0
+		lineageTag: cb2bd6e5-ea31-4110-b62b-1e45e2454f5b
+
+	measure 'Three-month Returning Customers' =
+			CALCULATE(
+			    [Complete Three-month Follow-up Customers],
+			    KEEPFILTERS(customer_repeat_behavior[has_returned_within_3_months] = TRUE())
+			)
+		formatString: #,0
+		lineageTag: 572ba1ec-2679-4afa-8ce8-ba126c8e5856
+
+	measure 'Three-month Return Rate' =
+			DIVIDE(
+			    [Three-month Returning Customers],
+			    [Complete Three-month Follow-up Customers]
+			)
+		formatString: 0.000%
+		lineageTag: e628d9ec-7067-4489-a5a9-caea93687522
+
+	measure 'Customer Segment Share' =
+			DIVIDE(
+			    [Repeat Customers],
+			    CALCULATE(
+			        [Repeat Customers],
+			        REMOVEFILTERS(customer_repeat_behavior[customer_segment])
+			    )
+			)
+		formatString: 0.000%
+		isHidden
+		lineageTag: befb884b-d7be-451f-b1ff-33a547658d83
+
+	column customer_unique_id
+		dataType: string
+		lineageTag: ea4ba0bb-ee87-43e5-8bc5-5d705490fa32
+		summarizeBy: none
+		sourceColumn: customer_unique_id
+
+	column cohort_month
+		dataType: dateTime
+		formatString: MMM yyyy
+		lineageTag: 02009065-6e9b-4d07-a831-6fbbac2a8d57
+		summarizeBy: none
+		sourceColumn: cohort_month
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column total_delivered_orders_through_cutoff
+		dataType: int64
+		formatString: #,0
+		lineageTag: 6339d585-bc21-4b68-9f59-b68f917a40c0
+		summarizeBy: none
+		sourceColumn: total_delivered_orders_through_cutoff
+
+	column active_month_count_through_cutoff
+		dataType: int64
+		formatString: #,0
+		lineageTag: 3eb966a5-0539-43bb-81a7-6edc35262a7b
+		summarizeBy: none
+		sourceColumn: active_month_count_through_cutoff
+
+	column is_repeat_purchaser
+		dataType: boolean
+		lineageTag: d2548e0e-2c0e-4639-b0a8-ba7287313353
+		summarizeBy: none
+		sourceColumn: is_repeat_purchaser
+
+	column has_returned_later_month
+		dataType: boolean
+		lineageTag: 104f8271-40ca-47a1-8d17-ee7088e579b4
+		summarizeBy: none
+		sourceColumn: has_returned_later_month
+
+	column has_returned_within_3_months
+		dataType: boolean
+		lineageTag: af15b2ab-6240-4b50-8c11-6973de88c912
+		summarizeBy: none
+		sourceColumn: has_returned_within_3_months
+
+	column first_return_month_age
+		dataType: int64
+		formatString: 0
+		lineageTag: 4cb4f006-4a19-426b-9f16-8c712937734d
+		summarizeBy: none
+		sourceColumn: first_return_month_age
+
+	column has_complete_3_month_followup
+		dataType: boolean
+		lineageTag: ccea8bc0-acf3-456c-846e-4dfde15042c8
+		summarizeBy: none
+		sourceColumn: has_complete_3_month_followup
+
+	column customer_segment
+		dataType: string
+		lineageTag: 1e66f75b-18fb-42ef-babc-f1acc3867431
+		summarizeBy: none
+		sourceColumn: customer_segment
+
+	partition customer_repeat_behavior = m
+		mode: import
+		source =
+				let
+				  Source = GoogleBigQuery.Database([BillingProject = null, UseStorageApi = null, ConnectionTimeout = null, CommandTimeout = null]),
+				  #"Navigation 1" = Source{[Name = "mda-platform-2026"]}[Data],
+				  #"Navigation 2" = #"Navigation 1"{[Name = "analytics_dev", Kind = "Schema"]}[Data],
+				  #"Navigation 3" = #"Navigation 2"{[Name = "customer_repeat_behavior", Kind = "Table"]}[Data]
+				in
+				  #"Navigation 3"
+
+	annotation PBI_ResultType = Table
+

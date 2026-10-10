@@ -30,3 +30,12 @@ ai/outputs/
 
 # Generated synthetic experiment artifacts
 experimentation/outputs/
+
+# Track the Customer Retention & Cohorts PBIR page.
+!dashboard/Data Analytics.Report/definition/pages/b5c0a170e8204dc8a501/**
+
+# Track the synthetic A/B reporting fixtures and sixth PBIR page only.
+!dashboard/data/ab_testing/ab_variants.csv
+!dashboard/data/ab_testing/ab_summary.csv
+!dashboard/data/ab_testing/ab_guardrails.csv
+!dashboard/Data Analytics.Report/definition/pages/ab600170e8204dc8a601/**

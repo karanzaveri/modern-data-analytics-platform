@@ -1,0 +1,3 @@
+experiment_id,variant,variant_label,users,conversions,observed_conversion_rate,true_generation_probability
+synthetic_checkout_redesign_seed42,A,Control A,4433,527,0.11888111888111888,0.12
+synthetic_checkout_redesign_seed42,B,Treatment B,4433,603,0.13602526505752313,0.14

@@ -1,0 +1,48 @@
+version: 2
+
+models:
+  - name: int_customer_cohorts
+    description: >-
+      One row per stable customer, assigned to their first observed delivered-purchase
+      month using all history in int_customer_monthly_activity. The cohort is a
+      calendar month, not the exact first-order or delivery date, and may not
+      represent the customer's true first purchase before the observed history.
+      Order and active-month totals cover all observed qualifying activity without
+      a reporting window. Inherits the intermediate layer's view materialization.
+
+    columns:
+      - name: customer_unique_id
+        description: Stable customer identifier across delivered purchases.
+        data_tests:
+          - not_null
+          - unique
+          - relationships:
+              arguments:
+                to: ref('dim_customers')
+                field: customer_unique_id
+
+      - name: cohort_month
+        description: >-
+          First calendar day of the earliest observed delivered-purchase month,
+          calculated as MIN(activity_month). Preserves the upstream purchase-date
+          convention; this is not a precise first-order date.
+        data_tests:
+          - not_null
+
+      - name: total_delivered_orders
+        description: >-
+          Sum of delivered_order_count across all observed customer-month records;
+          a positive integer count of qualifying delivered orders.
+        data_tests:
+          - not_null
+          - positive
+          - integer
+
+      - name: active_month_count
+        description: >-
+          Number of distinct observed purchase months with delivered purchases.
+          A positive integer count of active months, not elapsed months since cohort entry.
+        data_tests:
+          - not_null
+          - positive
+          - integer

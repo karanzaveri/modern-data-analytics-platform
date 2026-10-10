@@ -1,0 +1,39 @@
+version: 2
+
+models:
+  - name: int_customer_monthly_activity
+    description: >-
+      One row per stable customer and purchase month with delivered orders.
+      Includes all observed history, excludes missing or blank customer identities
+      and missing purchase dates, and preserves fct_orders' purchase-date convention.
+      Inherits the intermediate layer's view materialization. This is monthly
+      purchase activity, not yet a cohort or retention calculation.
+    data_tests:
+      - unique_customer_month
+
+    columns:
+      - name: customer_unique_id
+        description: >-
+          Stable customer identifier across orders. Null and whitespace-only
+          identifiers are excluded; qualifying identifiers are preserved as stored.
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_customers')
+                field: customer_unique_id
+
+      - name: activity_month
+        description: >-
+          First calendar day of the purchase month, derived using DATE_TRUNC from
+          fct_orders.order_purchase_date without additional timezone conversion.
+        data_tests:
+          - not_null
+
+      - name: delivered_order_count
+        description: >-
+          Number of distinct qualifying delivered order_id values for the customer
+          in this month. Multiple purchases produce one customer-month record.
+        data_tests:
+          - not_null
+          - positive

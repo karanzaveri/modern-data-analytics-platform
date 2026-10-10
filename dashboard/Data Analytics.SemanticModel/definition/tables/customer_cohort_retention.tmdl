@@ -1,0 +1,168 @@
+table customer_cohort_retention
+	lineageTag: fd36fc36-a405-46cc-958d-597a81134987
+
+	measure 'Cohort Customers' =
+			CALCULATE(
+			    SUMX(
+			        VALUES(customer_cohort_retention[cohort_month]),
+			        CALCULATE(MAX(customer_cohort_retention[cohort_size]))
+			    ),
+			    REMOVEFILTERS(customer_cohort_retention[months_since_first_purchase]),
+			    REMOVEFILTERS(customer_cohort_retention[activity_month])
+			)
+		formatString: #,0
+		lineageTag: 21d5c73d-783a-4680-aa80-2b1ffe3c4ae5
+
+	measure 'Cohort Size' =
+			IF(
+			    HASONEVALUE(customer_cohort_retention[cohort_month]),
+			    CALCULATE(
+			        MAX(customer_cohort_retention[cohort_size]),
+			        REMOVEFILTERS(customer_cohort_retention[months_since_first_purchase]),
+			        REMOVEFILTERS(customer_cohort_retention[activity_month])
+			    )
+			)
+		formatString: #,0
+		lineageTag: ce1d1117-2588-45ed-9168-cf9313910198
+
+	measure 'Cohort Retention' =
+			IF(
+			    HASONEVALUE(customer_cohort_retention[months_since_first_purchase]),
+			    DIVIDE(
+			        SUM(customer_cohort_retention[retained_customers]),
+			        SUM(customer_cohort_retention[cohort_size])
+			    )
+			)
+		formatString: 0.00%
+		lineageTag: c43055cd-25a7-4dd4-a06d-1e53241ad446
+
+	measure 'Weighted M1 Retention' =
+			CALCULATE(
+			    [Cohort Retention],
+			    REMOVEFILTERS(customer_cohort_retention[months_since_first_purchase]),
+			    REMOVEFILTERS(customer_cohort_retention[activity_month]),
+			    customer_cohort_retention[months_since_first_purchase] = 1
+			)
+		formatString: 0.000%
+		lineageTag: 59fe722f-b900-4f71-94d3-f1cb1b4bba42
+
+	measure 'Weighted M2 Retention' =
+			CALCULATE(
+			    [Cohort Retention],
+			    REMOVEFILTERS(customer_cohort_retention[months_since_first_purchase]),
+			    REMOVEFILTERS(customer_cohort_retention[activity_month]),
+			    customer_cohort_retention[months_since_first_purchase] = 2
+			)
+		formatString: 0.000%
+		lineageTag: 511481af-da02-4d53-a2c5-bd8f9336ee2a
+
+	measure 'Weighted M3 Retention' =
+			CALCULATE(
+			    [Cohort Retention],
+			    REMOVEFILTERS(customer_cohort_retention[months_since_first_purchase]),
+			    REMOVEFILTERS(customer_cohort_retention[activity_month]),
+			    customer_cohort_retention[months_since_first_purchase] = 3
+			)
+		formatString: 0.000%
+		lineageTag: 4c03bc1f-f30f-467c-84ff-8fce8cee0553
+
+	measure 'Retention Cell Colour' =
+			VAR Rate = [Cohort Retention]
+			VAR Age = SELECTEDVALUE(customer_cohort_retention[months_since_first_purchase])
+			RETURN
+			    SWITCH(
+			        TRUE(),
+			        ISBLANK(Rate), BLANK(),
+			        Age = 0, "#EDF1F5",
+			        Rate >= 0.02, "#5BA99B",
+			        Rate >= 0.01, "#A5D6C8",
+			        Rate >= 0.005, "#CCE8DD",
+			        Rate > 0, "#E9F5F0",
+			        "#FFFFFF"
+			    )
+		isHidden
+		lineageTag: 7a29fb02-78de-401a-bf3e-b786cb1b2f85
+
+	column cohort_month
+		dataType: dateTime
+		formatString: MMM yyyy
+		lineageTag: 32aa2dd1-fb37-401a-a767-f1edce8ee964
+		summarizeBy: none
+		sourceColumn: cohort_month
+
+		variation Variation
+			isDefault
+			relationship: 98c8d149-9bab-4a58-806f-6944e86c9eb6
+			defaultHierarchy: LocalDateTable_ff382e11-2e5a-4ffc-9acf-3a22dde953e8.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column activity_month
+		dataType: dateTime
+		formatString: MMM yyyy
+		lineageTag: 93f8a343-2390-459f-82fe-752b06687aa8
+		summarizeBy: none
+		sourceColumn: activity_month
+
+		variation Variation
+			isDefault
+			relationship: 3bd2046e-3d76-4c97-bf4f-cfeb74397bf0
+			defaultHierarchy: LocalDateTable_0546ac2b-eb60-4ebc-8699-28619a663f35.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column months_since_first_purchase
+		dataType: int64
+		formatString: 0
+		lineageTag: 8489103b-abc4-4180-9743-acb425d4221f
+		summarizeBy: none
+		sourceColumn: months_since_first_purchase
+
+		annotation SummarizationSetBy = Automatic
+
+	column cohort_size
+		dataType: int64
+		formatString: 0
+		lineageTag: 5cf27e2f-83f1-4704-b3c2-20d0585107fd
+		summarizeBy: none
+		sourceColumn: cohort_size
+
+		annotation SummarizationSetBy = Automatic
+
+	column retained_customers
+		dataType: int64
+		formatString: 0
+		lineageTag: 03c6b004-f7d2-43c5-9e43-d70241ac99f8
+		summarizeBy: sum
+		sourceColumn: retained_customers
+
+		annotation SummarizationSetBy = Automatic
+
+	column retention_rate
+		dataType: double
+		formatString: 0.00%
+		lineageTag: 869b643f-0a06-4ff0-a7e6-dbb9e5df92c6
+		summarizeBy: none
+		sourceColumn: retention_rate
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition customer_cohort_retention = m
+		mode: import
+		source =
+				let
+				  Source = GoogleBigQuery.Database([BillingProject = null, UseStorageApi = null, ConnectionTimeout = null, CommandTimeout = null]),
+				  #"Navigation 1" = Source{[Name = "mda-platform-2026"]}[Data],
+				  #"Navigation 2" = #"Navigation 1"{[Name = "analytics_dev", Kind = "Schema"]}[Data],
+				  #"Navigation 3" = #"Navigation 2"{[Name = "customer_cohort_retention", Kind = "Table"]}[Data]
+				in
+				  #"Navigation 3"
+
+	annotation PBI_ResultType = Table
+

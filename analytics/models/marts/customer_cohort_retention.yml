@@ -1,0 +1,51 @@
+version: 2
+
+models:
+  - name: customer_cohort_retention
+    description: >-
+      Monthly delivered-purchase retention at (cohort_month, months_since_first_purchase)
+      grain. Cohorts remain the first observed delivered-purchase month from full
+      history, not necessarily true acquisition. The original cohort size is fixed.
+      All months from cohort entry through the reporting cutoff are included;
+      observable months without purchases have zero retention, while future months
+      are absent. M0 is 100%; later rates may rise or fall as customers return.
+      Inherits the marts table materialization. The dbt variable
+      cohort_observation_end_date defaults to '2018-08-31' and must be a quoted
+      YYYY-MM-DD calendar month-end; invalid or partial-month cutoffs raise a
+      compile-time error. A month-level filter then includes all qualifying purchase
+      dates through that cutoff without altering upstream assignments or timezone
+      conventions. This cutoff is an analytical reporting convention, not proof of
+      source completeness or mature delivery outcomes. No restricted start date is used.
+
+    columns:
+      - name: cohort_month
+        description: First calendar day of the first observed delivered-purchase month.
+        data_tests:
+          - not_null
+
+      - name: activity_month
+        description: First calendar day of the observable purchase month being evaluated.
+        data_tests:
+          - not_null
+
+      - name: months_since_first_purchase
+        description: Nonnegative integer calendar-month age, with cohort entry at zero.
+        data_tests:
+          - not_null
+          - integer
+
+      - name: cohort_size
+        description: Original distinct customer count in the cohort, fixed across its rows.
+        data_tests:
+          - not_null
+          - positive
+
+      - name: retained_customers
+        description: Distinct cohort members with at least one delivered purchase in this month.
+        data_tests:
+          - not_null
+
+      - name: retention_rate
+        description: SAFE_DIVIDE(retained_customers, cohort_size), as a decimal from zero to one.
+        data_tests:
+          - not_null

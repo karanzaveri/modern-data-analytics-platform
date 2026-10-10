@@ -1,0 +1,4 @@
+experiment_id,guardrail_metric,metric_definition,unit,availability,control_value,treatment_value,assessment
+synthetic_checkout_redesign_seed42,Payment failures,Failed payment attempts as a percentage of all payment attempts.,percentage points,missing,,,Insufficient data
+synthetic_checkout_redesign_seed42,Refunds,Purchases refunded within 30 days as a percentage of mature purchases.,percentage points,missing,,,Insufficient data
+synthetic_checkout_redesign_seed42,Checkout latency,Mean time from checkout initiation to checkout response.,milliseconds,missing,,,Insufficient data

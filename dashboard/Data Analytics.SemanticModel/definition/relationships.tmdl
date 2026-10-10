@@ -79,3 +79,13 @@ relationship AutoDetected_86848d3f-f9ba-44be-b756-f602828ac499
 	fromColumn: fct_order_items.seller_id
 	toColumn: dim_sellers.seller_id
 
+relationship 98c8d149-9bab-4a58-806f-6944e86c9eb6
+	joinOnDateBehavior: datePartOnly
+	fromColumn: customer_cohort_retention.cohort_month
+	toColumn: LocalDateTable_ff382e11-2e5a-4ffc-9acf-3a22dde953e8.Date
+
+relationship 3bd2046e-3d76-4c97-bf4f-cfeb74397bf0
+	joinOnDateBehavior: datePartOnly
+	fromColumn: customer_cohort_retention.activity_month
+	toColumn: LocalDateTable_0546ac2b-eb60-4ebc-8699-28619a663f35.Date
+

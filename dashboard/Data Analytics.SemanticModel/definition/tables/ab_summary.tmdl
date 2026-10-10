@@ -1,0 +1,451 @@
+table ab_summary
+	lineageTag: 010c0204-53bd-4311-abe6-8cbb2503cae1
+
+	measure 'Total Participants' = SUM(ab_variants[users])
+		formatString: #,0
+		lineageTag: 03b85779-76c6-4e9a-a657-06b864099d2a
+
+	measure 'Control Conversion' = SELECTEDVALUE(ab_summary[control_conversion_rate])
+		formatString: 0.000%
+		lineageTag: 9f62f082-41aa-4c17-a8ed-0dc7d2fec947
+
+	measure 'Treatment Conversion' = SELECTEDVALUE(ab_summary[treatment_conversion_rate])
+		formatString: 0.000%
+		lineageTag: a1cd61de-a77f-4e37-a36d-28b110d294bf
+
+	measure 'Absolute Uplift pp' = 100 * SELECTEDVALUE(ab_summary[conversion_difference])
+		formatString: +0.000" pp";-0.000" pp";0.000" pp"
+		lineageTag: 585b61a4-a583-4d08-9f3d-c99e81adbfc6
+
+	measure 'Experiment P-value' = SELECTEDVALUE(ab_summary[p_value])
+		formatString: 0.000000
+		lineageTag: 4675f40c-0756-4a94-89b8-f89e60e00963
+
+	measure 'Experiment Design Text' =
+			"SYNTHETIC checkout redesign | Seed " & FORMAT(SELECTEDVALUE(ab_summary[random_seed]), "0") &
+			UNICHAR(10) & FORMAT(SELECTEDVALUE(ab_summary[actual_sample_size_per_arm]), "#,0") & " users per arm | Fixed allocation | Alpha " & FORMAT(SELECTEDVALUE(ab_summary[alpha]), "0.00") &
+			UNICHAR(10) & "Independent Bernoulli outcomes; fixed-horizon analysis"
+		lineageTag: bb311d2d-a820-4e36-8a89-6a23839ca97c
+
+	measure 'Inference Text' =
+			"Treatment B minus Control A: " & FORMAT([Absolute Uplift pp], "+0.000;-0.000;0.000") & " pp" &
+			UNICHAR(10) & FORMAT(SELECTEDVALUE(ab_summary[confidence_level]), "0%") & " CI lower: " & FORMAT(100 * SELECTEDVALUE(ab_summary[ci_lower]), "+0.000;-0.000;0.000") & " pp | Upper: " & FORMAT(100 * SELECTEDVALUE(ab_summary[ci_upper]), "+0.000;-0.000;0.000") & " pp" &
+			UNICHAR(10) & "Relative uplift: " & FORMAT(SELECTEDVALUE(ab_summary[relative_uplift]), "+0.000%;-0.000%;0.000%") &
+			UNICHAR(10) & "p = " & FORMAT([Experiment P-value], "0.000000") & " | " & IF(SELECTEDVALUE(ab_summary[statistically_significant]), "Statistically significant", "Not statistically significant") &
+			UNICHAR(10) & SELECTEDVALUE(ab_summary[statistical_test_method]) &
+			UNICHAR(10) & "CI method: " & SELECTEDVALUE(ab_summary[confidence_interval_method]) &
+			UNICHAR(10) & "Confidence describes interval coverage, not a probability of treatment success."
+		lineageTag: 6520a8ad-d805-49cb-b6d1-4c1ac59b2193
+
+	measure 'Diagnostics Text' =
+			"Planned users/arm: " & FORMAT(SELECTEDVALUE(ab_summary[planned_sample_size_per_arm]), "#,0") & " | MDE: " & FORMAT(100 * SELECTEDVALUE(ab_summary[planned_mde]), "0.0") & " pp" &
+			UNICHAR(10) & "Target / theoretical power: " & FORMAT(SELECTEDVALUE(ab_summary[target_power]), "0.0%") & " / " & FORMAT(SELECTEDVALUE(ab_summary[theoretical_power]), "0.0%") &
+			UNICHAR(10) & "Empirical power: " & FORMAT(SELECTEDVALUE(ab_summary[empirical_power]), "0.0%") & " (" & FORMAT(SELECTEDVALUE(ab_summary[power_simulation_trials]), "#,0") & " trials)" &
+			UNICHAR(10) & "Null false positives: " & FORMAT(SELECTEDVALUE(ab_summary[empirical_false_positive_rate]), "0.0%") & " (" & FORMAT(SELECTEDVALUE(ab_summary[null_simulation_trials]), "#,0") & " trials)" &
+			UNICHAR(10) & "SRM p = " & FORMAT(SELECTEDVALUE(ab_summary[srm_p_value]), "0.000") & " | Threshold " & FORMAT(SELECTEDVALUE(ab_summary[srm_threshold]), "0.000") &
+			UNICHAR(10) & "Balance is fixed by construction, not evidence of assignment quality."
+		lineageTag: 3151e4fe-45e1-4a3c-904c-246070878c10
+
+	measure 'Quarterly Impact Text' =
+			"HYPOTHETICAL: " & FORMAT(SELECTEDVALUE(ab_summary[projected_eligible_users]), "#,0") & " users; EUR " & FORMAT(SELECTEDVALUE(ab_summary[contribution_profit_per_conversion]), "0") & " profit/conversion" &
+			UNICHAR(10) & "Implementation / ongoing: EUR " & FORMAT(SELECTEDVALUE(ab_summary[implementation_cost]), "#,0") & " / " & FORMAT(SELECTEDVALUE(ab_summary[ongoing_costs]), "#,0") &
+			UNICHAR(10) & "Incremental conversions: " & FORMAT(SELECTEDVALUE(ab_summary[expected_incremental_conversions]), "#,0.0") &
+			UNICHAR(10) & "Net benefit: EUR " & FORMAT(SELECTEDVALUE(ab_summary[estimated_net_financial_benefit]), "#,0.00;-#,0.00") &
+			UNICHAR(10) & "Lower / upper: EUR " & FORMAT(SELECTEDVALUE(ab_summary[lower_net_financial_scenario]), "#,0;-#,0") & " / " & FORMAT(SELECTEDVALUE(ab_summary[upper_net_financial_scenario]), "#,0;-#,0") &
+			UNICHAR(10) & "Break-even uplift: " & FORMAT(100 * SELECTEDVALUE(ab_summary[break_even_uplift]), "0.000") & " pp" &
+			UNICHAR(10) & "Fixed traffic and economics; scenarios are not forecasts."
+		lineageTag: a84fc266-f210-45ee-bb91-11a30b33075b
+
+	measure 'Recommendation Text' =
+			"No full rollout recommended: " &
+			IF(SELECTEDVALUE(ab_summary[estimated_net_financial_benefit]) < 0, "negative financial projection; ", "financial assumptions require validation; ") &
+			IF(COUNTROWS(FILTER(ab_guardrails, ab_guardrails[availability] = "missing")) > 0, "guardrails not measured; ", "guardrails require review; ") &
+			IF(SELECTEDVALUE(ab_summary[is_synthetic]), "synthetic experiment. Real validity and instrumentation remain unverified.", "validity and instrumentation require review.")
+		lineageTag: f09e8a22-02df-4e39-b529-94b71eb11560
+
+	column experiment_id
+		dataType: string
+		lineageTag: b896b4a1-c564-4fe0-a47f-4ce47eae300c
+		summarizeBy: none
+		sourceColumn: experiment_id
+
+	column experiment_name
+		dataType: string
+		lineageTag: beaa6315-d98a-4689-a3e4-59c68add836d
+		summarizeBy: none
+		sourceColumn: experiment_name
+
+	column is_synthetic
+		dataType: boolean
+		lineageTag: b981fb3c-305a-4bc3-9d8b-3da23b409d89
+		summarizeBy: none
+		sourceColumn: is_synthetic
+
+	column random_seed
+		dataType: int64
+		lineageTag: 9e59ca95-fcbe-40c3-a864-651f7d299d56
+		summarizeBy: none
+		sourceColumn: random_seed
+
+	column alpha
+		dataType: double
+		lineageTag: ec9d2d1e-a3e4-4339-8553-d2aa2d5bddb9
+		summarizeBy: none
+		sourceColumn: alpha
+
+	column confidence_level
+		dataType: double
+		lineageTag: 3bfb9cdc-25da-4181-a941-8914552d7eb1
+		summarizeBy: none
+		sourceColumn: confidence_level
+
+	column statistical_test_method
+		dataType: string
+		lineageTag: f9d5fb02-8339-47d2-9808-fdd413220127
+		summarizeBy: none
+		sourceColumn: statistical_test_method
+
+	column confidence_interval_method
+		dataType: string
+		lineageTag: 6c46de08-fef4-40e1-8618-e98ce468f0c7
+		summarizeBy: none
+		sourceColumn: confidence_interval_method
+
+	column difference_orientation
+		dataType: string
+		lineageTag: ea5e61e4-888c-45b0-bc73-4622dc8ee216
+		summarizeBy: none
+		sourceColumn: difference_orientation
+
+	column control_conversion_rate
+		dataType: double
+		lineageTag: 4cd23e1f-24be-46aa-870e-4203c601e1aa
+		summarizeBy: none
+		sourceColumn: control_conversion_rate
+
+	column treatment_conversion_rate
+		dataType: double
+		lineageTag: be28f880-e71d-4d8d-90c7-3d9613b6f303
+		summarizeBy: none
+		sourceColumn: treatment_conversion_rate
+
+	column conversion_difference
+		dataType: double
+		lineageTag: 90fac02d-a1d9-457d-8e63-a44724e638f7
+		summarizeBy: none
+		sourceColumn: conversion_difference
+
+	column relative_uplift
+		dataType: double
+		lineageTag: 0dae229d-b63b-436e-85e3-635b0a3be118
+		summarizeBy: none
+		sourceColumn: relative_uplift
+
+	column z_statistic
+		dataType: double
+		lineageTag: 7ac02ec6-7dd0-4ad3-b5a3-8251e347ea78
+		summarizeBy: none
+		sourceColumn: z_statistic
+
+	column p_value
+		dataType: double
+		lineageTag: b95d2464-39ec-441c-8b5f-6a79fcaa43e3
+		summarizeBy: none
+		sourceColumn: p_value
+
+	column ci_lower
+		dataType: double
+		lineageTag: 5a99bf8a-a44c-4397-93b7-4332aa91e073
+		summarizeBy: none
+		sourceColumn: ci_lower
+
+	column ci_upper
+		dataType: double
+		lineageTag: 5f15c4df-0194-40a4-b31f-bc6f2ee89aae
+		summarizeBy: none
+		sourceColumn: ci_upper
+
+	column statistically_significant
+		dataType: boolean
+		lineageTag: a441bafe-4d6f-4731-89f5-e6b89813fa53
+		summarizeBy: none
+		sourceColumn: statistically_significant
+
+	column planned_sample_size_per_arm
+		dataType: int64
+		lineageTag: 82a62e18-e8ce-4c62-8223-d4dadb182322
+		summarizeBy: none
+		sourceColumn: planned_sample_size_per_arm
+
+	column actual_sample_size_per_arm
+		dataType: int64
+		lineageTag: b2d91f20-29d2-4bbe-b82e-c34b30563a96
+		summarizeBy: none
+		sourceColumn: actual_sample_size_per_arm
+
+	column target_power
+		dataType: double
+		lineageTag: 96da08ca-2db2-491d-95de-18af891ea094
+		summarizeBy: none
+		sourceColumn: target_power
+
+	column planned_mde
+		dataType: double
+		lineageTag: 63976aca-5849-4c68-b862-1dc98081b6a4
+		summarizeBy: none
+		sourceColumn: planned_mde
+
+	column planned_relative_mde
+		dataType: double
+		lineageTag: 5b0b06a9-500c-431b-a5b4-5081d487f48f
+		summarizeBy: none
+		sourceColumn: planned_relative_mde
+
+	column theoretical_power
+		dataType: double
+		lineageTag: 855590a0-7b22-49b5-9bdb-1a91bf40e91d
+		summarizeBy: none
+		sourceColumn: theoretical_power
+
+	column srm_statistic
+		dataType: double
+		lineageTag: 3d2f83ed-30f5-40d5-b1d6-db3abd6a1bfc
+		summarizeBy: none
+		sourceColumn: srm_statistic
+
+	column srm_degrees_of_freedom
+		dataType: int64
+		lineageTag: d83e7925-14b1-47cd-aa6f-2d7d4e514a77
+		summarizeBy: none
+		sourceColumn: srm_degrees_of_freedom
+
+	column srm_p_value
+		dataType: double
+		lineageTag: 6b5ed477-1e93-426e-ba6b-df28b28763ce
+		summarizeBy: none
+		sourceColumn: srm_p_value
+
+	column srm_threshold
+		dataType: double
+		lineageTag: 095460a1-7424-445d-b3cc-b8a35ed9eeba
+		summarizeBy: none
+		sourceColumn: srm_threshold
+
+	column srm_detected
+		dataType: boolean
+		lineageTag: 503a32f4-3dc2-46ea-8dae-e2f1d43e2e0f
+		summarizeBy: none
+		sourceColumn: srm_detected
+
+	column allocation_note
+		dataType: string
+		lineageTag: a0ae7a6b-408c-48b8-a20a-82d201be25ee
+		summarizeBy: none
+		sourceColumn: allocation_note
+
+	column monte_carlo_random_seed
+		dataType: int64
+		lineageTag: 8f6b72ef-c8b6-4451-ae2d-e1840cc5d5dc
+		summarizeBy: none
+		sourceColumn: monte_carlo_random_seed
+
+	column power_simulation_trials
+		dataType: int64
+		lineageTag: f460e120-942e-4995-8ca0-86338b05c4db
+		summarizeBy: none
+		sourceColumn: power_simulation_trials
+
+	column power_significant_trials
+		dataType: int64
+		lineageTag: aeb7e664-4710-4a32-b62b-9ad51213fd66
+		summarizeBy: none
+		sourceColumn: power_significant_trials
+
+	column power_non_significant_trials
+		dataType: int64
+		lineageTag: 11e21b16-2898-4305-bc4a-dd5231129b94
+		summarizeBy: none
+		sourceColumn: power_non_significant_trials
+
+	column power_undefined_trials
+		dataType: int64
+		lineageTag: 71159247-e291-42bc-bc4b-abebff5c747d
+		summarizeBy: none
+		sourceColumn: power_undefined_trials
+
+	column empirical_power
+		dataType: double
+		lineageTag: 2edf0186-1da7-4ff2-9fb0-b81b315e4256
+		summarizeBy: none
+		sourceColumn: empirical_power
+
+	column null_simulation_trials
+		dataType: int64
+		lineageTag: 2d139e0b-2f87-45c5-8af9-8f0ec19906e9
+		summarizeBy: none
+		sourceColumn: null_simulation_trials
+
+	column null_false_positive_trials
+		dataType: int64
+		lineageTag: 20130f31-1fd0-4cf8-8a86-d15546548435
+		summarizeBy: none
+		sourceColumn: null_false_positive_trials
+
+	column null_non_significant_trials
+		dataType: int64
+		lineageTag: e6651998-10e7-455f-8ec6-a667a9da1690
+		summarizeBy: none
+		sourceColumn: null_non_significant_trials
+
+	column null_undefined_trials
+		dataType: int64
+		lineageTag: e0b6832a-3d44-421a-89da-171fd686e8db
+		summarizeBy: none
+		sourceColumn: null_undefined_trials
+
+	column empirical_false_positive_rate
+		dataType: double
+		lineageTag: b0e2f2f5-c00d-4ecb-aa95-584f030547ab
+		summarizeBy: none
+		sourceColumn: empirical_false_positive_rate
+
+	column nominal_false_positive_rate
+		dataType: double
+		lineageTag: 507e522e-c2ae-45eb-ad93-67583fe89053
+		summarizeBy: none
+		sourceColumn: nominal_false_positive_rate
+
+	column financial_assumptions_are_hypothetical
+		dataType: boolean
+		lineageTag: aba39342-dc98-461d-b437-b52ed4690c83
+		summarizeBy: none
+		sourceColumn: financial_assumptions_are_hypothetical
+
+	column financial_period
+		dataType: string
+		lineageTag: 84daa8ca-52c6-4b80-8a10-ae05452901db
+		summarizeBy: none
+		sourceColumn: financial_period
+
+	column currency
+		dataType: string
+		lineageTag: 57dd6784-fb6d-48e5-a9b9-ba94ce442f3a
+		summarizeBy: none
+		sourceColumn: currency
+
+	column projected_eligible_users
+		dataType: int64
+		lineageTag: 12aa4444-9959-4c7f-b365-84ddc9c3f5d8
+		summarizeBy: none
+		sourceColumn: projected_eligible_users
+
+	column contribution_profit_per_conversion
+		dataType: double
+		lineageTag: c10fe6bf-b7b8-491b-9447-d1d629addf3b
+		summarizeBy: none
+		sourceColumn: contribution_profit_per_conversion
+
+	column implementation_cost
+		dataType: double
+		lineageTag: c77e6fa0-65b4-4762-aa34-62850025e8a6
+		summarizeBy: none
+		sourceColumn: implementation_cost
+
+	column ongoing_costs
+		dataType: double
+		lineageTag: 4f0cca1b-ecbd-4223-bf4e-eb48a67350ab
+		summarizeBy: none
+		sourceColumn: ongoing_costs
+
+	column expected_incremental_conversions
+		dataType: double
+		lineageTag: c35f4183-62ad-4a29-975f-644b234faf44
+		summarizeBy: none
+		sourceColumn: expected_incremental_conversions
+
+	column expected_incremental_contribution
+		dataType: double
+		lineageTag: 9c2a7c49-eb59-4207-825f-90a07c7630fb
+		summarizeBy: none
+		sourceColumn: expected_incremental_contribution
+
+	column estimated_net_financial_benefit
+		dataType: double
+		lineageTag: bb26882c-a3d6-409d-8e29-7ff217277d69
+		summarizeBy: none
+		sourceColumn: estimated_net_financial_benefit
+
+	column lower_net_financial_scenario
+		dataType: double
+		lineageTag: 46cb2e41-1c6c-4508-a178-89bf9262117b
+		summarizeBy: none
+		sourceColumn: lower_net_financial_scenario
+
+	column upper_net_financial_scenario
+		dataType: double
+		lineageTag: c0bcce6d-5e03-42f6-b101-cb6c7ba557c1
+		summarizeBy: none
+		sourceColumn: upper_net_financial_scenario
+
+	column break_even_uplift
+		dataType: double
+		lineageTag: a1a635f9-ce6b-481b-ad9c-3b2b182795e5
+		summarizeBy: none
+		sourceColumn: break_even_uplift
+
+	column economically_attractive_under_assumptions
+		dataType: boolean
+		lineageTag: 8d9d666a-64da-4808-9f17-061615280e5a
+		summarizeBy: none
+		sourceColumn: economically_attractive_under_assumptions
+
+	column rollout_readiness
+		dataType: string
+		lineageTag: 00b5ccaf-514d-4a6c-b63c-499202f1fbf4
+		summarizeBy: none
+		sourceColumn: rollout_readiness
+
+	column limitations
+		dataType: string
+		lineageTag: ee83cea5-77bd-4703-8c65-2f0a1efbb898
+		summarizeBy: none
+		sourceColumn: limitations
+
+	column numpy_version
+		dataType: string
+		lineageTag: 4a1d032f-d1f2-4b16-9d33-299d4d9bbd2c
+		summarizeBy: none
+		sourceColumn: numpy_version
+
+	column pandas_version
+		dataType: string
+		lineageTag: ec5f23dc-e61b-42dd-b615-c22b1b822e34
+		summarizeBy: none
+		sourceColumn: pandas_version
+
+	column statsmodels_version
+		dataType: string
+		lineageTag: 8f717bc3-0e04-4de7-a651-5c8c390bf795
+		summarizeBy: none
+		sourceColumn: statsmodels_version
+
+	column scipy_version
+		dataType: string
+		lineageTag: c8e82d98-f50d-47de-a296-2fbdd15d5a12
+		summarizeBy: none
+		sourceColumn: scipy_version
+
+	partition ab_summary = m
+		mode: import
+		source =
+				let
+				    SourcePath = "C:\Users\karan\modern-data-analytics-platform\dashboard\data\ab_testing\ab_summary.csv",
+				    Source = Csv.Document(File.Contents(SourcePath), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Headers = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+				    MissingAsNull = Table.ReplaceValue(Headers, "", null, Replacer.ReplaceValue, Table.ColumnNames(Headers)),
+				    Typed = Table.TransformColumnTypes(MissingAsNull, {{"experiment_id", type text}, {"experiment_name", type text}, {"is_synthetic", type logical}, {"random_seed", Int64.Type}, {"alpha", type number}, {"confidence_level", type number}, {"statistical_test_method", type text}, {"confidence_interval_method", type text}, {"difference_orientation", type text}, {"control_conversion_rate", type number}, {"treatment_conversion_rate", type number}, {"conversion_difference", type number}, {"relative_uplift", type number}, {"z_statistic", type number}, {"p_value", type number}, {"ci_lower", type number}, {"ci_upper", type number}, {"statistically_significant", type logical}, {"planned_sample_size_per_arm", Int64.Type}, {"actual_sample_size_per_arm", Int64.Type}, {"target_power", type number}, {"planned_mde", type number}, {"planned_relative_mde", type number}, {"theoretical_power", type number}, {"srm_statistic", type number}, {"srm_degrees_of_freedom", Int64.Type}, {"srm_p_value", type number}, {"srm_threshold", type number}, {"srm_detected", type logical}, {"allocation_note", type text}, {"monte_carlo_random_seed", Int64.Type}, {"power_simulation_trials", Int64.Type}, {"power_significant_trials", Int64.Type}, {"power_non_significant_trials", Int64.Type}, {"power_undefined_trials", Int64.Type}, {"empirical_power", type number}, {"null_simulation_trials", Int64.Type}, {"null_false_positive_trials", Int64.Type}, {"null_non_significant_trials", Int64.Type}, {"null_undefined_trials", Int64.Type}, {"empirical_false_positive_rate", type number}, {"nominal_false_positive_rate", type number}, {"financial_assumptions_are_hypothetical", type logical}, {"financial_period", type text}, {"currency", type text}, {"projected_eligible_users", Int64.Type}, {"contribution_profit_per_conversion", type number}, {"implementation_cost", type number}, {"ongoing_costs", type number}, {"expected_incremental_conversions", type number}, {"expected_incremental_contribution", type number}, {"estimated_net_financial_benefit", type number}, {"lower_net_financial_scenario", type number}, {"upper_net_financial_scenario", type number}, {"break_even_uplift", type number}, {"economically_attractive_under_assumptions", type logical}, {"rollout_readiness", type text}, {"limitations", type text}, {"numpy_version", type text}, {"pandas_version", type text}, {"statsmodels_version", type text}, {"scipy_version", type text}}, "en-US")
+				in
+				    Typed
+
+	annotation PBI_ResultType = Table
+

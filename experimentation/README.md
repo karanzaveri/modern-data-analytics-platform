@@ -581,3 +581,45 @@ dataset's SRM pass is guaranteed by its fixed balanced allocation and cannot
 prove randomisation quality. Even favourable finances do not make the report
 recommend a full rollout: real experiment validity, guardrail evidence, and
 business assumptions require separate review.
+
+## Reproducible Power BI CSV exports
+
+From the repository root, regenerate all three exports with one PowerShell command:
+
+```powershell
+& .\.venv\Scripts\python.exe -m experimentation.export_powerbi
+```
+
+The adapter reuses the existing simulation, inference, sample-size, SRM,
+Monte Carlo and business-impact functions. It generates the seed-42 experiment
+in memory with exactly 4,433 users per arm; original CSVs and reports are preserved.
+Outputs are UTF-8 CSVs in the Git-ignored `experimentation/outputs/powerbi/` directory:
+
+- `ab_variants.csv`: two rows with arm sizes, conversions, observed rates and
+  true generation probabilities.
+- `ab_summary.csv`: one row with inference, planning, allocation diagnostics,
+  1,000-trial effect and null simulations, hypothetical quarterly finances,
+  readiness limitations and calculation-library versions.
+- `ab_guardrails.csv`: three rows describing payment failures, refunds and
+  checkout latency. All are unavailable in the original experiment; their
+  control and treatment values are empty CSV fields, never zero. Illustrative
+  guardrail measurements are deliberately excluded.
+
+Conversion rates, conversion differences, confidence-interval endpoints,
+relative uplift, planned MDE and break-even uplift are fractions, not percentages
+or percentage points. For example, a difference of `0.02` means two percentage
+points; relative uplift of `0.14` means 14%. Apply percentage formatting in the
+reporting layer. Differences and confidence intervals are treatment B minus
+control A. Financial values use EUR and are explicitly hypothetical.
+
+These exports are synthetic educational results, not production observations or
+a rollout recommendation. The balanced allocation is guaranteed by construction;
+its SRM pass cannot establish real randomisation quality. Financial scenarios
+transform the conversion-effect interval and omit uncertainty in future traffic,
+costs and economics. Monte Carlo scenarios each restart a local generator with
+seed 42. Repeated exports are deterministic within the recorded library versions;
+cross-version numerical differences remain possible.
+
+An optional `--output-dir` overrides the destination. Relative destinations are
+resolved against the repository root, not the current working directory. Only
+the three export files in the destination are replaced by regeneration.

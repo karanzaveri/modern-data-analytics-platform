@@ -4313,6 +4313,444 @@ cultureInfo en-IN
 			          }
 			        }
 			      ]
+			    },
+			    "customer_cohort_retention.weighted_m1_retention": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "customer_cohort_retention",
+			          "ConceptualProperty": "Weighted M1 Retention"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "M1": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "customer_cohort_retention.weighted_m2_retention": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "customer_cohort_retention",
+			          "ConceptualProperty": "Weighted M2 Retention"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "M2": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "customer_cohort_retention.weighted_m3_retention": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "customer_cohort_retention",
+			          "ConceptualProperty": "Weighted M3 Retention"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "M3": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "ab_summary.random_seed": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "ab_summary",
+			          "ConceptualProperty": "random_seed"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Seed": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "ab_summary.actual_sample_size_per_arm": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "ab_summary",
+			          "ConceptualProperty": "actual_sample_size_per_arm"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Users / arm": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "ab_summary.alpha": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "ab_summary",
+			          "ConceptualProperty": "alpha"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Alpha": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "ab_summary.confidence_level": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "ab_summary",
+			          "ConceptualProperty": "confidence_level"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Confidence": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "ab_summary.absolute_uplift_pp": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "ab_summary",
+			          "ConceptualProperty": "Absolute Uplift pp"
+			        }
+			      },
+			      "State": "Generated"
+			    },
+			    "ab_summary.experiment_pvalue": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "ab_summary",
+			          "ConceptualProperty": "Experiment P-value"
+			        }
+			      },
+			      "State": "Generated"
+			    },
+			    "ab_summary.statistical_test_method": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "ab_summary",
+			          "ConceptualProperty": "statistical_test_method"
+			        }
+			      },
+			      "State": "Generated"
+			    },
+			    "ab_summary.confidence_interval_method": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "ab_summary",
+			          "ConceptualProperty": "confidence_interval_method"
+			        }
+			      },
+			      "State": "Generated"
+			    },
+			    "ab_guardrails.guardrail_metric": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "ab_guardrails",
+			          "ConceptualProperty": "guardrail_metric"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Metric": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "ab_guardrails.availability": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "ab_guardrails",
+			          "ConceptualProperty": "availability"
+			        }
+			      },
+			      "State": "Generated"
+			    },
+			    "ab_guardrails.assessment": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "ab_guardrails",
+			          "ConceptualProperty": "assessment"
+			        }
+			      },
+			      "State": "Generated"
+			    },
+			    "ab_guardrails.unit": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "ab_guardrails",
+			          "ConceptualProperty": "unit"
+			        }
+			      },
+			      "State": "Generated"
+			    },
+			    "ab_summary.relative_uplift": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "ab_summary",
+			          "ConceptualProperty": "relative_uplift"
+			        }
+			      },
+			      "State": "Generated"
+			    },
+			    "ab_summary.p_value": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "ab_summary",
+			          "ConceptualProperty": "p_value"
+			        }
+			      },
+			      "State": "Generated"
+			    },
+			    "ab_guardrails.guardrail_availability_text": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "ab_guardrails",
+			          "ConceptualProperty": "Guardrail Availability Text"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Availability and interpretation": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "ab_summary.inference_text": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "ab_summary",
+			          "ConceptualProperty": "Inference Text"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Observed effect, interval and test": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "ab_summary.power_simulation_trials": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "ab_summary",
+			          "ConceptualProperty": "power_simulation_trials"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Power simulation trials": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "ab_summary.null_simulation_trials": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "ab_summary",
+			          "ConceptualProperty": "null_simulation_trials"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Null simulation trials": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "ab_summary.projected_eligible_users": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "ab_summary",
+			          "ConceptualProperty": "projected_eligible_users"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Eligible users / quarter": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "ab_summary.contribution_profit_per_conversion": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "ab_summary",
+			          "ConceptualProperty": "contribution_profit_per_conversion"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Profit / conversion (EUR)": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "ab_summary.ongoing_costs": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "ab_summary",
+			          "ConceptualProperty": "ongoing_costs"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Ongoing costs (EUR)": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "ab_summary.financial_period": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "ab_summary",
+			          "ConceptualProperty": "financial_period"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Hypothetical period": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "ab_summary.recommendation_text": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "ab_summary",
+			          "ConceptualProperty": "Recommendation Text"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "No full rollout recommended under the stated assumptions": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
 			    }
 			  },
 			  "Relationships": {
