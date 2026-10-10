@@ -4,10 +4,10 @@
   "position": {
     "x": 64.194528875379945,
     "y": 704.68085106382978,
-    "z": 5,
+    "z": 5000,
     "height": 319.51367781155017,
     "width": 1120.4863221884498,
-    "tabOrder": 5
+    "tabOrder": 5000
   },
   "visual": {
     "visualType": "donutChart",
@@ -618,42 +618,5 @@
       ]
     },
     "drillFilterOtherVisuals": true
-  },
-  "filterConfig": {
-    "filters": [
-      {
-        "name": "08ea9b8489067aba09cd",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "fct_orders"
-              }
-            },
-            "Property": "Delivery Status"
-          }
-        },
-        "type": "Categorical"
-      },
-      {
-        "name": "1927bb3cf2d126d96979",
-        "field": {
-          "Aggregation": {
-            "Expression": {
-              "Column": {
-                "Expression": {
-                  "SourceRef": {
-                    "Entity": "fct_orders"
-                  }
-                },
-                "Property": "order_id"
-              }
-            },
-            "Function": 5
-          }
-        },
-        "type": "Advanced"
-      }
-    ]
   }
 }

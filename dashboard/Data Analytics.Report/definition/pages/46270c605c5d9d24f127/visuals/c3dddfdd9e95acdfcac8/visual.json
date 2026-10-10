@@ -4,10 +4,10 @@
   "position": {
     "x": 518,
     "y": 164,
-    "z": 2,
+    "z": 2000,
     "height": 144,
     "width": 430,
-    "tabOrder": 2
+    "tabOrder": 2000
   },
   "visual": {
     "visualType": "cardVisual",
@@ -512,23 +512,5 @@
       ]
     },
     "drillFilterOtherVisuals": true
-  },
-  "filterConfig": {
-    "filters": [
-      {
-        "name": "7ad0a391b100e0c9094b",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "fct_orders"
-              }
-            },
-            "Property": "Late Delivery Rate"
-          }
-        },
-        "type": "Advanced"
-      }
-    ]
   }
 }

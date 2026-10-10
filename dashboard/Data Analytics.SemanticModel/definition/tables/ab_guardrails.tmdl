@@ -1,0 +1,75 @@
+table ab_guardrails
+	lineageTag: aa2d9bb0-159a-4df5-9549-eb6a85f1900d
+
+	measure 'Guardrail Availability Text' =
+			CONCATENATEX(
+			    ab_guardrails,
+			    ab_guardrails[guardrail_metric] & ": " &
+			        IF(ab_guardrails[availability] = "missing", "Not measured", ab_guardrails[availability]),
+			    UNICHAR(10),
+			    ab_guardrails[guardrail_metric], ASC
+			) & UNICHAR(10) & "Descriptive checks only; missing data cannot establish safety."
+		lineageTag: da3d0778-9a6a-4378-af30-dca0ab859446
+
+	column experiment_id
+		dataType: string
+		lineageTag: 5dd8cbae-795c-4e89-bd0a-7033a8ae2323
+		summarizeBy: none
+		sourceColumn: experiment_id
+
+	column guardrail_metric
+		dataType: string
+		lineageTag: ec610f82-7b70-4e38-8b2c-d4f6fa3ce2c1
+		summarizeBy: none
+		sourceColumn: guardrail_metric
+
+	column metric_definition
+		dataType: string
+		lineageTag: b2fff441-abce-45cd-8863-8f2204f00fbd
+		summarizeBy: none
+		sourceColumn: metric_definition
+
+	column unit
+		dataType: string
+		lineageTag: 954f64ae-65e4-44a5-b824-8c2ec8e008f9
+		summarizeBy: none
+		sourceColumn: unit
+
+	column availability
+		dataType: string
+		lineageTag: a2af7279-b822-477f-88dc-6703c14d96e9
+		summarizeBy: none
+		sourceColumn: availability
+
+	column control_value
+		dataType: double
+		lineageTag: 350fe2ec-b516-492e-97bb-1aa1d2ae80b9
+		summarizeBy: none
+		sourceColumn: control_value
+
+	column treatment_value
+		dataType: double
+		lineageTag: 2cd69777-758e-436d-b23b-46cefdf0ea58
+		summarizeBy: none
+		sourceColumn: treatment_value
+
+	column assessment
+		dataType: string
+		lineageTag: 8f0b1d24-f8f0-47a5-9df0-af0d9db457c7
+		summarizeBy: none
+		sourceColumn: assessment
+
+	partition ab_guardrails = m
+		mode: import
+		source =
+				let
+				    SourcePath = "C:\Users\karan\modern-data-analytics-platform\dashboard\data\ab_testing\ab_guardrails.csv",
+				    Source = Csv.Document(File.Contents(SourcePath), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Headers = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+				    MissingAsNull = Table.ReplaceValue(Headers, "", null, Replacer.ReplaceValue, Table.ColumnNames(Headers)),
+				    Typed = Table.TransformColumnTypes(MissingAsNull, {{"experiment_id", type text}, {"guardrail_metric", type text}, {"metric_definition", type text}, {"unit", type text}, {"availability", type text}, {"control_value", type number}, {"treatment_value", type number}, {"assessment", type text}}, "en-US")
+				in
+				    Typed
+
+	annotation PBI_ResultType = Table
+

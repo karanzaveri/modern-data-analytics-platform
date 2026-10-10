@@ -9,7 +9,7 @@ model Model
 
 annotation __PBI_TimeIntelligenceEnabled = 1
 
-annotation PBI_QueryOrder = ["monthly_revenue_reporting","customer_metrics","fct_orders","dim_products","dim_sellers","fct_order_items"]
+annotation PBI_QueryOrder = ["monthly_revenue_reporting","customer_metrics","fct_orders","dim_products","dim_sellers","fct_order_items","analytics_dev","customer_cohort_retention","customer_repeat_behavior","ab_variants","ab_guardrails","ab_summary"]
 
 annotation PBI_ProTooling = ["DevMode"]
 
@@ -32,6 +32,14 @@ ref table dim_sellers
 ref table fct_order_items
 ref table LocalDateTable_20ab87fa-d630-4ffa-84fe-c18e709bab6f
 ref table LocalDateTable_949192f2-900f-46b6-ab67-3baa7a5358ba
+ref table analytics_dev
+ref table customer_cohort_retention
+ref table LocalDateTable_ff382e11-2e5a-4ffc-9acf-3a22dde953e8
+ref table LocalDateTable_0546ac2b-eb60-4ebc-8699-28619a663f35
+ref table customer_repeat_behavior
+ref table ab_variants
+ref table ab_guardrails
+ref table ab_summary
 
 ref cultureInfo en-IN
 

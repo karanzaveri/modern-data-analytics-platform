@@ -2,12 +2,12 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
   "name": "a11e0000000000000102",
   "position": {
-    "x": 756,
+    "x": 64,
     "y": 4,
-    "z": 20,
-    "width": 1100,
+    "z": 8000,
     "height": 28,
-    "tabOrder": 20
+    "width": 1792,
+    "tabOrder": 8000
   },
   "visual": {
     "visualType": "pageNavigator",
@@ -39,7 +39,7 @@
             "columnCount": {
               "expr": {
                 "Literal": {
-                  "Value": "4L"
+                  "Value": "7L"
                 }
               }
             }

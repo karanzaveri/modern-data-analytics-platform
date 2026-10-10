@@ -1,0 +1,273 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.1.0/schema.json",
+  "name": "b5c0a170e8204dc8a501",
+  "displayName": "Customer Retention & Cohorts",
+  "displayOption": "FitToPage",
+  "height": 1080,
+  "width": 1920,
+  "objects": {
+    "background": [
+      {
+        "properties": {
+          "color": {
+            "solid": {
+              "color": {
+                "expr": {
+                  "Literal": {
+                    "Value": "'#F4F6F8'"
+                  }
+                }
+              }
+            }
+          },
+          "transparency": {
+            "expr": {
+              "Literal": {
+                "Value": "0D"
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "b5c0a170e8204dc8f001",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "customer_cohort_retention"
+              }
+            },
+            "Property": "cohort_month"
+          }
+        },
+        "type": "Advanced",
+        "howCreated": "User",
+        "filter": {
+          "Version": 2,
+          "From": [
+            {
+              "Name": "c",
+              "Entity": "customer_cohort_retention",
+              "Type": 0
+            }
+          ],
+          "Where": [
+            {
+              "Condition": {
+                "And": {
+                  "Left": {
+                    "Comparison": {
+                      "ComparisonKind": 2,
+                      "Left": {
+                        "Column": {
+                          "Expression": {
+                            "SourceRef": {
+                              "Source": "c"
+                            }
+                          },
+                          "Property": "cohort_month"
+                        }
+                      },
+                      "Right": {
+                        "Literal": {
+                          "Value": "datetime'2017-01-01T00:00:00'"
+                        }
+                      }
+                    }
+                  },
+                  "Right": {
+                    "Comparison": {
+                      "ComparisonKind": 3,
+                      "Left": {
+                        "Column": {
+                          "Expression": {
+                            "SourceRef": {
+                              "Source": "c"
+                            }
+                          },
+                          "Property": "cohort_month"
+                        }
+                      },
+                      "Right": {
+                        "Literal": {
+                          "Value": "datetime'2018-06-01T00:00:00'"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "visualInteractions": [
+    {
+      "source": "b5c0a170e8204dc80003",
+      "target": "b5c0a170e8204dc80004",
+      "type": "DataFilter"
+    },
+    {
+      "source": "b5c0a170e8204dc80003",
+      "target": "b5c0a170e8204dc80005",
+      "type": "DataFilter"
+    },
+    {
+      "source": "b5c0a170e8204dc80003",
+      "target": "b5c0a170e8204dc80006",
+      "type": "DataFilter"
+    },
+    {
+      "source": "b5c0a170e8204dc80003",
+      "target": "b5c0a170e8204dc80007",
+      "type": "DataFilter"
+    },
+    {
+      "source": "b5c0a170e8204dc80003",
+      "target": "b5c0a170e8204dc80008",
+      "type": "DataFilter"
+    },
+    {
+      "source": "b5c0a170e8204dc80003",
+      "target": "b5c0a170e8204dc80009",
+      "type": "DataFilter"
+    },
+    {
+      "source": "b5c0a170e8204dc80003",
+      "target": "b5c0a170e8204dc8000a",
+      "type": "DataFilter"
+    },
+    {
+      "source": "b5c0a170e8204dc80008",
+      "target": "b5c0a170e8204dc80004",
+      "type": "NoFilter"
+    },
+    {
+      "source": "b5c0a170e8204dc80008",
+      "target": "b5c0a170e8204dc80005",
+      "type": "NoFilter"
+    },
+    {
+      "source": "b5c0a170e8204dc80008",
+      "target": "b5c0a170e8204dc80006",
+      "type": "NoFilter"
+    },
+    {
+      "source": "b5c0a170e8204dc80008",
+      "target": "b5c0a170e8204dc80007",
+      "type": "NoFilter"
+    },
+    {
+      "source": "b5c0a170e8204dc80008",
+      "target": "b5c0a170e8204dc80009",
+      "type": "NoFilter"
+    },
+    {
+      "source": "b5c0a170e8204dc80008",
+      "target": "b5c0a170e8204dc8000a",
+      "type": "NoFilter"
+    },
+    {
+      "source": "b5c0a170e8204dc80008",
+      "target": "b5c0a170e8204dc80003",
+      "type": "NoFilter"
+    },
+    {
+      "source": "b5c0a170e8204dc80009",
+      "target": "b5c0a170e8204dc80004",
+      "type": "NoFilter"
+    },
+    {
+      "source": "b5c0a170e8204dc80009",
+      "target": "b5c0a170e8204dc80005",
+      "type": "NoFilter"
+    },
+    {
+      "source": "b5c0a170e8204dc80009",
+      "target": "b5c0a170e8204dc80006",
+      "type": "NoFilter"
+    },
+    {
+      "source": "b5c0a170e8204dc80009",
+      "target": "b5c0a170e8204dc80007",
+      "type": "NoFilter"
+    },
+    {
+      "source": "b5c0a170e8204dc80009",
+      "target": "b5c0a170e8204dc80008",
+      "type": "NoFilter"
+    },
+    {
+      "source": "b5c0a170e8204dc80009",
+      "target": "b5c0a170e8204dc8000a",
+      "type": "NoFilter"
+    },
+    {
+      "source": "b5c0a170e8204dc80009",
+      "target": "b5c0a170e8204dc80003",
+      "type": "NoFilter"
+    },
+    {
+      "source": "b5c0a170e8204dc8000a",
+      "target": "b5c0a170e8204dc80004",
+      "type": "NoFilter"
+    },
+    {
+      "source": "b5c0a170e8204dc8000a",
+      "target": "b5c0a170e8204dc80005",
+      "type": "NoFilter"
+    },
+    {
+      "source": "b5c0a170e8204dc8000a",
+      "target": "b5c0a170e8204dc80006",
+      "type": "NoFilter"
+    },
+    {
+      "source": "b5c0a170e8204dc8000a",
+      "target": "b5c0a170e8204dc80007",
+      "type": "NoFilter"
+    },
+    {
+      "source": "b5c0a170e8204dc8000a",
+      "target": "b5c0a170e8204dc80008",
+      "type": "NoFilter"
+    },
+    {
+      "source": "b5c0a170e8204dc8000a",
+      "target": "b5c0a170e8204dc80009",
+      "type": "NoFilter"
+    },
+    {
+      "source": "b5c0a170e8204dc8000a",
+      "target": "b5c0a170e8204dc80003",
+      "type": "NoFilter"
+    },
+    {
+      "source": "b5c0a170e8204dc80003",
+      "target": "b5c0a170e8204dc8000c",
+      "type": "DataFilter"
+    },
+    {
+      "source": "b5c0a170e8204dc8000a",
+      "target": "b5c0a170e8204dc8000c",
+      "type": "NoFilter"
+    },
+    {
+      "source": "b5c0a170e8204dc80008",
+      "target": "b5c0a170e8204dc8000c",
+      "type": "NoFilter"
+    },
+    {
+      "source": "b5c0a170e8204dc80009",
+      "target": "b5c0a170e8204dc8000c",
+      "type": "NoFilter"
+    }
+  ]
+}

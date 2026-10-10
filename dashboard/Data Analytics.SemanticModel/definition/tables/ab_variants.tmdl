@@ -1,0 +1,75 @@
+table ab_variants
+	lineageTag: fb496b2b-54b0-4c88-843c-c98928e15d6a
+
+	measure 'Variant Participants' = SUM(ab_variants[users])
+		formatString: #,0
+		lineageTag: a1d7028e-469b-48e9-870d-824f13a0698d
+
+	measure 'Variant Conversions' = SUM(ab_variants[conversions])
+		formatString: #,0
+		lineageTag: 9f0c7fc9-c092-4357-acd4-c9a3dc85832e
+
+	measure 'Variant Conversion Rate' = DIVIDE([Variant Conversions], [Variant Participants])
+		formatString: 0.000%
+		lineageTag: f7af26c2-c8a5-4bb9-9961-4d9400705776
+
+	measure 'True Generation Probability' = SELECTEDVALUE(ab_variants[true_generation_probability])
+		formatString: 0.000%
+		lineageTag: d2d5f958-6c3c-441d-8ac8-10a258cb909e
+
+	column experiment_id
+		dataType: string
+		lineageTag: c059a327-aace-4a63-b4b1-3871a1672195
+		summarizeBy: none
+		sourceColumn: experiment_id
+
+	column variant
+		dataType: string
+		lineageTag: 48b20d4a-008a-40ae-9994-72a4dc5963d7
+		summarizeBy: none
+		sourceColumn: variant
+
+	column variant_label
+		dataType: string
+		lineageTag: 449f03e1-ea77-44c7-a4f7-ee6f606c6a8f
+		summarizeBy: none
+		sourceColumn: variant_label
+
+	column users
+		dataType: int64
+		lineageTag: 4034c173-6655-4375-bf04-a27e231bbba7
+		summarizeBy: none
+		sourceColumn: users
+
+	column conversions
+		dataType: int64
+		lineageTag: cc9a26a2-471d-467c-8d8e-6fef7dc572aa
+		summarizeBy: none
+		sourceColumn: conversions
+
+	column observed_conversion_rate
+		dataType: double
+		lineageTag: a14ff00a-6cab-4b27-9c98-bbe98189be85
+		summarizeBy: none
+		sourceColumn: observed_conversion_rate
+
+	column true_generation_probability
+		dataType: double
+		lineageTag: 4b82a80f-0057-4753-bbf4-d6f6a9a12952
+		summarizeBy: none
+		sourceColumn: true_generation_probability
+
+	partition ab_variants = m
+		mode: import
+		source =
+				let
+				    SourcePath = "C:\Users\karan\modern-data-analytics-platform\dashboard\data\ab_testing\ab_variants.csv",
+				    Source = Csv.Document(File.Contents(SourcePath), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Headers = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+				    MissingAsNull = Table.ReplaceValue(Headers, "", null, Replacer.ReplaceValue, Table.ColumnNames(Headers)),
+				    Typed = Table.TransformColumnTypes(MissingAsNull, {{"experiment_id", type text}, {"variant", type text}, {"variant_label", type text}, {"users", Int64.Type}, {"conversions", Int64.Type}, {"observed_conversion_rate", type number}, {"true_generation_probability", type number}}, "en-US")
+				in
+				    Typed
+
+	annotation PBI_ResultType = Table
+

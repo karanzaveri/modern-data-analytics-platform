@@ -1,0 +1,39 @@
+table analytics_dev
+	lineageTag: 6caaf94b-285f-4d76-913c-5756e14e346e
+
+	column Name
+		dataType: string
+		lineageTag: ebebda64-273a-49fe-bfe2-dc7c8d1e2897
+		summarizeBy: none
+		sourceColumn: Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column Description
+		dataType: string
+		lineageTag: 5c6960c7-cf9f-4de2-be72-481629761181
+		summarizeBy: none
+		sourceColumn: Description
+
+		annotation SummarizationSetBy = Automatic
+
+	column Kind
+		dataType: string
+		lineageTag: a1e9e2af-818f-4e20-aea9-23e947209450
+		summarizeBy: none
+		sourceColumn: Kind
+
+		annotation SummarizationSetBy = Automatic
+
+	partition analytics_dev = m
+		mode: import
+		source =
+				let
+				  Source = GoogleBigQuery.Database([Implementation = "2.0"]),
+				  #"Navigation 1" = Source{[Name = "mda-platform-2026", Kind = "Database"]}[Data],
+				  #"Navigation 2" = #"Navigation 1"{[Name = "analytics_dev", Kind = "Schema"]}[Data]
+				in
+				  #"Navigation 2"
+
+	annotation PBI_ResultType = Table
+

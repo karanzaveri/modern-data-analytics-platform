@@ -4,10 +4,10 @@
   "position": {
     "x": 1208,
     "y": 704,
-    "z": 8,
+    "z": 8000,
     "height": 320,
     "width": 648,
-    "tabOrder": 8
+    "tabOrder": 8000
   },
   "visual": {
     "visualType": "donutChart",

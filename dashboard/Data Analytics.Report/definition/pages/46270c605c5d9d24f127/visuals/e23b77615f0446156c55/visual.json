@@ -4,10 +4,10 @@
   "position": {
     "x": 64.194528875379945,
     "y": 332.64437689969606,
-    "z": 3,
+    "z": 3000,
     "height": 345.77507598784194,
     "width": 1120.4863221884498,
-    "tabOrder": 3
+    "tabOrder": 3000
   },
   "visual": {
     "visualType": "columnChart",
@@ -591,25 +591,6 @@
             }
           ]
         }
-      },
-      {
-        "name": "e2e0459cad9df12ad0c8",
-        "field": {
-          "Aggregation": {
-            "Expression": {
-              "Column": {
-                "Expression": {
-                  "SourceRef": {
-                    "Entity": "fct_orders"
-                  }
-                },
-                "Property": "order_id"
-              }
-            },
-            "Function": 5
-          }
-        },
-        "type": "Advanced"
       }
     ]
   }
